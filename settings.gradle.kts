@@ -1,5 +1,3 @@
-import groovy.lang.MissingPropertyException
-
 pluginManagement {
     repositories {
         // Snapshots

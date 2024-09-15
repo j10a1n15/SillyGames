@@ -1,17 +1,15 @@
-import dev.deftu.gradle.utils.GameSide
-
 plugins {
     java
-    kotlin("jvm") version("2.0.0")
+    kotlin("jvm") version ("2.0.0")
     val dgtVersion = "1.28.1"
-    id("dev.deftu.gradle.tools") version(dgtVersion)
-    id("dev.deftu.gradle.tools.shadow") version(dgtVersion)
-    id("dev.deftu.gradle.tools.kotlin") version(dgtVersion)
-    id("dev.deftu.gradle.tools.bloom") version(dgtVersion)
-    id("dev.deftu.gradle.tools.resources") version(dgtVersion)
-    id("dev.deftu.gradle.tools.minecraft.loom") version(dgtVersion)
-    id("dev.deftu.gradle.tools.github-publishing") version(dgtVersion)
-    id("dev.deftu.gradle.tools.minecraft.releases") version(dgtVersion)
+    id("dev.deftu.gradle.tools") version (dgtVersion)
+    id("dev.deftu.gradle.tools.shadow") version (dgtVersion)
+    id("dev.deftu.gradle.tools.kotlin") version (dgtVersion)
+    id("dev.deftu.gradle.tools.bloom") version (dgtVersion)
+    id("dev.deftu.gradle.tools.resources") version (dgtVersion)
+    id("dev.deftu.gradle.tools.minecraft.loom") version (dgtVersion)
+    id("dev.deftu.gradle.tools.github-publishing") version (dgtVersion)
+    id("dev.deftu.gradle.tools.minecraft.releases") version (dgtVersion)
 }
 
 loom {
