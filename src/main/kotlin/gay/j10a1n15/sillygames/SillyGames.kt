@@ -1,5 +1,6 @@
 package gay.j10a1n15.sillygames
 
+import gay.j10a1n15.sillygames.commands.CommandManager
 import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent
 
@@ -19,5 +20,13 @@ class SillyGames {
     @Mod.EventHandler
     fun preInit(event: FMLPreInitializationEvent) {
         println("Hi")
+
+        CommandManager()
+
+        /*listOf(
+
+        ).forEach {
+            MinecraftForge.EVENT_BUS.register(it)
+        }*/
     }
 }
