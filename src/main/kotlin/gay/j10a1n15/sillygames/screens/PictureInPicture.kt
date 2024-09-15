@@ -26,6 +26,7 @@ object PictureInPicture : WindowScreen(ElementaVersion.V5) {
     @Suppress("unused")
     fun onRender(matrix: UMatrixStack) {
         if (!visible) return
+        window.clearChildren()
 
         val container = UIBlock().constrain {
             x = 75.percent
