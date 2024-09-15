@@ -16,7 +16,7 @@ class CommandManager {
             FullScreen(Snake()).display()
         }
         registerCommand("pip") {
-            PictureInPicture(Snake()).display()
+            PictureInPicture.visible = !PictureInPicture.visible
         }
     }
 

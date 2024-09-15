@@ -1,6 +1,9 @@
 package gay.j10a1n15.sillygames
 
 import gay.j10a1n15.sillygames.commands.CommandManager
+import gay.j10a1n15.sillygames.events.EventHandler
+import gay.j10a1n15.sillygames.screens.PictureInPicture
+import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent
 
@@ -23,10 +26,11 @@ class SillyGames {
 
         CommandManager()
 
-        /*listOf(
-
+        listOf(
+            EventHandler,
+            PictureInPicture,
         ).forEach {
             MinecraftForge.EVENT_BUS.register(it)
-        }*/
+        }
     }
 }
