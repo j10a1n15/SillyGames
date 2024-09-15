@@ -4,7 +4,7 @@ package gay.j10a1n15.sillygames.commands
 import gay.j10a1n15.sillygames.games.Snake
 import gay.j10a1n15.sillygames.screens.FullScreen
 import gay.j10a1n15.sillygames.screens.PictureInPicture
-import gay.j10a1n15.sillygames.utils.SillyUtils
+import gay.j10a1n15.sillygames.utils.SillyUtils.display
 import net.minecraft.command.ICommandSender
 import net.minecraft.util.BlockPos
 import net.minecraftforge.client.ClientCommandHandler
@@ -13,10 +13,10 @@ class CommandManager {
 
     init {
         registerCommand("fullscreen") {
-            SillyUtils.displayGuiScreen(FullScreen(Snake()))
+            FullScreen(Snake()).display()
         }
         registerCommand("pip") {
-            SillyUtils.displayGuiScreen(PictureInPicture(Snake()))
+            PictureInPicture(Snake()).display()
         }
     }
 

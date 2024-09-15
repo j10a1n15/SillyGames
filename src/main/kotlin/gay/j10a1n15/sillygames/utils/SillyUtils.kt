@@ -5,8 +5,8 @@ import net.minecraft.client.gui.GuiScreen
 
 object SillyUtils {
 
-    fun displayGuiScreen(guiScreen: GuiScreen) {
-        Thread { Minecraft.getMinecraft().addScheduledTask { Minecraft.getMinecraft().displayGuiScreen(guiScreen) } }.start()
-    }
+    val minecraft get() = Minecraft.getMinecraft()
+
+    fun GuiScreen.display() = Thread { minecraft.addScheduledTask { minecraft.displayGuiScreen(this) } }.start()
 
 }
