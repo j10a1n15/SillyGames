@@ -1,5 +1,6 @@
 package gay.j10a1n15.sillygames.screens
 
+import gay.j10a1n15.sillygames.events.Events
 import gay.j10a1n15.sillygames.games.Game
 import gay.j10a1n15.sillygames.games.Snake
 import gg.essential.elementa.ElementaVersion
@@ -14,6 +15,10 @@ import gg.essential.universal.UMatrixStack
 import java.awt.Color
 
 object PictureInPicture : WindowScreen(ElementaVersion.V5) {
+
+    init {
+        Events.RENDER.register(::onRender)
+    }
 
     var game: Game? = Snake()
     var visible = false
