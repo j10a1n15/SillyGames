@@ -46,6 +46,10 @@ class Snake : Game() {
         lastUpdateTime = System.currentTimeMillis()
 
         val newHead = (snake.first() + direction).updateHeadOutsideBounds()
+        if (newHead in snake) {
+            gameOver.set(true)
+            return
+        }
 
         snake = (mutableListOf(newHead) + snake).let {
             if (newHead == foodPosition) {
@@ -132,5 +136,7 @@ class Snake : Game() {
         return container
     }
 
-    private fun randomLocation() = Vector2d((0 until gridWidth).random(), (0 until gridHeight).random())
+    private fun randomLocation(): Vector2d = Vector2d((0 until gridWidth).random(), (0 until gridHeight).random()).let {
+        if (it in snake) randomLocation() else it
+    }
 }
