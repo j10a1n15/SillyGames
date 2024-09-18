@@ -13,18 +13,29 @@ import gg.essential.elementa.utils.invisible
 import java.awt.Color
 
 class FullScreen(private val element: Game) : WindowScreen(ElementaVersion.V5) {
-    init {
-        val container = UIBlock().constrain {
-            x = CenterConstraint()
-            y = CenterConstraint()
-            width = 75.percent
-            height = 75.percent
-            color = Color.BLACK.invisible().constraint
-        } childOf window
+    private val container = UIBlock().constrain {
+        x = CenterConstraint()
+        y = CenterConstraint()
+        width = 75.percent
+        height = 75.percent
+        color = Color.BLACK.invisible().constraint
+    } childOf window
 
+    init {
+        element.getDisplay().constrain {
+            width = 100.percent
+            height = 100.percent
+        } childOf container
+    }
+
+    override fun onTick() {
+        super.onTick()
+
+        container.clearChildren()
         element.getDisplay().constrain {
             width = 100.percent
             height = 100.percent
         } childOf container
     }
 }
+
