@@ -10,9 +10,13 @@ import gg.essential.elementa.dsl.constrain
 import gg.essential.elementa.dsl.constraint
 import gg.essential.elementa.dsl.percent
 import gg.essential.elementa.utils.invisible
+import gg.essential.universal.GuiScale
 import java.awt.Color
 
-class FullScreen(private val element: Game) : WindowScreen(ElementaVersion.V5) {
+class FullScreen(private val element: Game) : WindowScreen(
+    version = ElementaVersion.V5,
+    newGuiScale = GuiScale.scaleForScreenSize().ordinal,
+) {
     private val container = UIBlock().constrain {
         x = CenterConstraint()
         y = CenterConstraint()

@@ -11,11 +11,14 @@ import gg.essential.elementa.dsl.constrain
 import gg.essential.elementa.dsl.constraint
 import gg.essential.elementa.dsl.percent
 import gg.essential.elementa.utils.invisible
+import gg.essential.universal.GuiScale
 import gg.essential.universal.UMatrixStack
 import java.awt.Color
 
-object PictureInPicture : WindowScreen(ElementaVersion.V5) {
-
+object PictureInPicture : WindowScreen(
+    version = ElementaVersion.V5,
+    newGuiScale = GuiScale.scaleForScreenSize().ordinal,
+) {
     init {
         Events.RENDER.register(::onRender)
     }
