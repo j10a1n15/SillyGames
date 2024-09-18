@@ -23,8 +23,7 @@ object PictureInPicture : WindowScreen(ElementaVersion.V5) {
     var game: Game? = Snake()
     var visible = false
 
-    @Suppress("unused")
-    fun onRender(matrix: UMatrixStack) {
+    private fun onRender(matrix: UMatrixStack) {
         if (!visible) return
         window.clearChildren()
 
