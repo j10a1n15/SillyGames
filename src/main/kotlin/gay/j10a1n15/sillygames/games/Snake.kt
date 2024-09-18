@@ -1,17 +1,20 @@
 package gay.j10a1n15.sillygames.games
 
+import gay.j10a1n15.sillygames.utils.SillyUtils
 import gay.j10a1n15.sillygames.utils.Vector2d
 import gg.essential.elementa.UIComponent
 import gg.essential.elementa.components.UIBlock
 import gg.essential.elementa.components.UIContainer
 import gg.essential.elementa.components.UIText
 import gg.essential.elementa.constraints.CenterConstraint
+import gg.essential.elementa.constraints.SiblingConstraint
 import gg.essential.elementa.dsl.childOf
 import gg.essential.elementa.dsl.constrain
 import gg.essential.elementa.dsl.constraint
 import gg.essential.elementa.dsl.percent
 import gg.essential.elementa.dsl.pixel
-import gg.essential.elementa.state.BasicState
+import gg.essential.elementa.dsl.plus
+import net.minecraft.client.gui.ScaledResolution
 import org.lwjgl.input.Keyboard
 import java.awt.Color
 
@@ -24,14 +27,14 @@ class Snake : Game() {
     private var snake = mutableListOf(Vector2d(10, 10))
     private var direction = Vector2d(1, 0)
     private var foodPosition = randomLocation()
-    private var gameOver = BasicState(false)
-    private var score = BasicState(0)
+    private var gameOver = false
+    private var score = 0
 
     private val gameSpeed = 200L
     private var lastUpdateTime = System.currentTimeMillis()
 
     override fun onTick() {
-        if (gameOver.get()) return
+        if (gameOver) return
         if (snake.isEmpty()) return
 
         if (System.currentTimeMillis() - lastUpdateTime < gameSpeed) return
@@ -39,13 +42,13 @@ class Snake : Game() {
 
         val newHead = (snake.first() + direction).updateHeadOutsideBounds()
         if (newHead in snake) {
-            gameOver.set(true)
+            gameOver = true
             return
         }
 
         snake = (mutableListOf(newHead) + snake).let {
             if (newHead == foodPosition) {
-                score.set(score.get() + 1)
+                score += 1
                 foodPosition = randomLocation()
             } else if (it.size > 4) {
                 return@let it.dropLast(1)
@@ -55,7 +58,7 @@ class Snake : Game() {
     }
 
     override fun onKeyClick(key: Int) {
-        if (gameOver.get()) return
+        if (gameOver) return
 
         val newDirection = when (key) {
             Keyboard.KEY_W -> Vector2d(0, -1)
@@ -126,10 +129,38 @@ class Snake : Game() {
             } childOf background
         }
 
-        UIText("Score: ${score.get()}").constrain {
+        UIText("Score: $score").constrain {
             x = CenterConstraint()
             y = background.constraints.y
         } childOf container
+
+        if (gameOver) {
+            val resolution = ScaledResolution(SillyUtils.minecraft)
+
+            UIBlock().constrain {
+                x = CenterConstraint()
+                y = CenterConstraint()
+                width = resolution.scaledWidth.pixel
+                height = resolution.scaledHeight.pixel
+                color = Color(0, 0, 0, 150).constraint
+            } childOf container
+
+            UIText("Game Over!").constrain {
+                x = CenterConstraint()
+                y = CenterConstraint()
+            } childOf container
+
+            UIText("Click to Restart").constrain {
+                x = CenterConstraint()
+                y = SiblingConstraint() + 10.pixel
+            }.onMouseClick {
+                snake = mutableListOf(Vector2d(10, 10))
+                direction = Vector2d(1, 0)
+                foodPosition = randomLocation()
+                gameOver = false
+                score = 0
+            } childOf container
+        }
 
         return container
     }
