@@ -9,12 +9,9 @@ import gg.essential.elementa.constraints.CenterConstraint
 import gg.essential.elementa.dsl.childOf
 import gg.essential.elementa.dsl.constrain
 import gg.essential.elementa.dsl.constraint
-import gg.essential.elementa.dsl.effect
 import gg.essential.elementa.dsl.percent
 import gg.essential.elementa.dsl.pixel
-import gg.essential.elementa.effects.OutlineEffect
 import gg.essential.elementa.state.BasicState
-import gg.essential.elementa.utils.invisible
 import org.lwjgl.input.Keyboard
 import java.awt.Color
 
@@ -104,13 +101,14 @@ class Snake : Game() {
 
         for (_x in 0 until gridWidth) {
             for (_y in 0 until gridHeight) {
+                val gridColor = if ((_x + _y) % 2 == 0) Color(0, 100, 0) else Color(0, 120, 0)
                 UIBlock().constrain {
                     width = gridSize.pixel
                     height = gridSize.pixel
                     x = (_x * gridSize).pixel
                     y = (_y * gridSize).pixel
-                    color = Color.BLACK.invisible().constraint
-                } childOf background effect OutlineEffect(Color.BLACK, 1f)
+                    color = gridColor.constraint
+                } childOf background
             }
         }
 
@@ -123,13 +121,13 @@ class Snake : Game() {
         } childOf background
 
         for ((index, segment) in snake.withIndex()) {
-            val segmentColor = (if (index == 0) Color.RED else Color.ORANGE).constraint
+            val segmentColor = if (index == 0) Color.RED else if (index % 2 == 1) Color(23, 172, 16) else Color(72, 232, 40)
             UIBlock().constrain {
                 width = gridSize.pixel
                 height = gridSize.pixel
                 x = (segment.x * gridSize).pixel
                 y = (segment.y * gridSize).pixel
-                color = segmentColor
+                color = segmentColor.constraint
             } childOf background
         }
 
