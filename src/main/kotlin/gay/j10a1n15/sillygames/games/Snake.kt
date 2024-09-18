@@ -4,6 +4,7 @@ import gay.j10a1n15.sillygames.utils.Vector2d
 import gg.essential.elementa.UIComponent
 import gg.essential.elementa.components.UIBlock
 import gg.essential.elementa.components.UIContainer
+import gg.essential.elementa.components.UIText
 import gg.essential.elementa.constraints.CenterConstraint
 import gg.essential.elementa.dsl.childOf
 import gg.essential.elementa.dsl.constrain
@@ -124,6 +125,11 @@ class Snake : Game() {
                 color = segmentColor.constraint
             } childOf background
         }
+
+        UIText("Score: ${score.get()}").constrain {
+            x = CenterConstraint()
+            y = background.constraints.y
+        } childOf container
 
         return container
     }
