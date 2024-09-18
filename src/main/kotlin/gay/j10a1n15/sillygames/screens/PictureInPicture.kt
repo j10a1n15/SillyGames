@@ -2,6 +2,7 @@ package gay.j10a1n15.sillygames.screens
 
 import gay.j10a1n15.sillygames.events.Events
 import gay.j10a1n15.sillygames.games.Game
+import gay.j10a1n15.sillygames.games.GameEventManager
 import gay.j10a1n15.sillygames.games.Snake
 import gg.essential.elementa.ElementaVersion
 import gg.essential.elementa.WindowScreen
@@ -21,7 +22,15 @@ object PictureInPicture : WindowScreen(ElementaVersion.V5) {
     }
 
     var game: Game? = Snake()
+        set(value) {
+            field = value
+            updateEventListeners()
+        }
     var visible = false
+        set(value) {
+            field = value
+            updateEventListeners()
+        }
 
     private fun onRender(matrix: UMatrixStack) {
         if (!visible) return
@@ -39,5 +48,9 @@ object PictureInPicture : WindowScreen(ElementaVersion.V5) {
         game.getDisplay() childOf container
 
         window.draw(matrix)
+    }
+
+    private fun updateEventListeners() {
+        GameEventManager.setGame(if (visible) game else null)
     }
 }

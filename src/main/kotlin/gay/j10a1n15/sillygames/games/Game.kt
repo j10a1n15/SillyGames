@@ -4,4 +4,8 @@ import gg.essential.elementa.UIComponent
 
 abstract class Game {
     abstract fun getDisplay(): UIComponent
+
+    open fun onTick() {}
+
+    open fun onKeyClick(key: Int) {}
 }

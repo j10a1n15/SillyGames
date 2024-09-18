@@ -1,6 +1,7 @@
 package gay.j10a1n15.sillygames.screens
 
 import gay.j10a1n15.sillygames.games.Game
+import gay.j10a1n15.sillygames.games.GameEventManager
 import gg.essential.elementa.ElementaVersion
 import gg.essential.elementa.WindowScreen
 import gg.essential.elementa.components.UIBlock
@@ -13,6 +14,11 @@ import gg.essential.elementa.utils.invisible
 import java.awt.Color
 
 class FullScreen(private val element: Game) : WindowScreen(ElementaVersion.V5) {
+
+    init {
+        GameEventManager.setGame(element)
+    }
+
     private val container = UIBlock().constrain {
         x = CenterConstraint()
         y = CenterConstraint()
@@ -36,6 +42,11 @@ class FullScreen(private val element: Game) : WindowScreen(ElementaVersion.V5) {
             width = 100.percent
             height = 100.percent
         } childOf container
+    }
+
+    override fun onScreenClose() {
+        super.onScreenClose()
+        GameEventManager.setGame(null)
     }
 }
 

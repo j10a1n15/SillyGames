@@ -1,6 +1,5 @@
 package gay.j10a1n15.sillygames.games
 
-import gay.j10a1n15.sillygames.events.Events
 import gay.j10a1n15.sillygames.utils.Vector2d
 import gg.essential.elementa.UIComponent
 import gg.essential.elementa.components.UIBlock
@@ -17,11 +16,6 @@ import java.awt.Color
 
 class Snake : Game() {
 
-    init {
-        Events.TICK.register { onTick() }
-        Events.KEYBOARD.register { onKeyClick(it) }
-    }
-
     private val gridSize = 20
     private val gridWidth = 30
     private val gridHeight = 20
@@ -35,7 +29,7 @@ class Snake : Game() {
     private val gameSpeed = 200L
     private var lastUpdateTime = System.currentTimeMillis()
 
-    private fun onTick() {
+    override fun onTick() {
         if (gameOver.get()) return
         if (snake.isEmpty()) return
 
@@ -59,7 +53,7 @@ class Snake : Game() {
         }.toMutableList()
     }
 
-    private fun onKeyClick(key: Int) {
+    override fun onKeyClick(key: Int) {
         if (gameOver.get()) return
 
         val newDirection = when (key) {
