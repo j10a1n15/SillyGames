@@ -47,3 +47,5 @@ gradle-app.setting
 bin/
 eclipse-formatter.xml
 /.vscode/
+
+.kotlin
