@@ -12,4 +12,10 @@ object EventHandler {
         Events.RENDER.post(UMatrixStack.Compat.get())
     }
 
+    @SubscribeEvent
+    fun onTick(event: TickEvent.ClientTickEvent) {
+        if (event.phase == TickEvent.Phase.START) return
+        Events.TICK.post(Unit)
+    }
+
 }
