@@ -19,7 +19,5 @@ object WordleWordList {
         return this.allowed.contains(word.lowercase())
     }
 
-    fun getWord(): String {
-        return this.words.random()
-    }
+    fun getWord() = this.words.random()
 }

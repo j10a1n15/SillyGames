@@ -98,9 +98,7 @@ class WordleState {
         return null
     }
 
-    private fun isAllowed(): Boolean {
-        return WordleWordList.isAllowed(guesses[tries])
-    }
+    private fun isAllowed() = WordleWordList.isAllowed(guesses[tries])
 
     fun getKeyboardColor(letter: Char): Color {
         if (!letters.containsKey(letter.lowercaseChar())) return WordlePalette.LIGHT_GRAY
