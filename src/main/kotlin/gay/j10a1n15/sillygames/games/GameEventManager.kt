@@ -8,7 +8,8 @@ object GameEventManager {
 
     init {
         Events.TICK.register { game?.onTick() }
-        Events.KEYBOARD.register { game?.onKeyClick(it) }
+        Events.KEYBOARD.register { game?.onKeyHeld(it) }
+        Events.KEYBOARD_DOWN.register { game?.onKeyPressed(it) }
     }
 
     fun setGame(game: Game?) {

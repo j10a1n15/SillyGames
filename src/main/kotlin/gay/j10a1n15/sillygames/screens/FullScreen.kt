@@ -52,5 +52,10 @@ class FullScreen(private val element: Game) : WindowScreen(
         super.onScreenClose()
         GameEventManager.setGame(null)
     }
+
+    override fun updateGuiScale() {
+        this.newGuiScale = GuiScale.scaleForScreenSize().ordinal
+        super.updateGuiScale()
+    }
 }
 
