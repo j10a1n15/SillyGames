@@ -12,7 +12,7 @@ import gg.essential.elementa.dsl.constrain
 import gg.essential.elementa.dsl.constraint
 import gg.essential.elementa.dsl.percent
 import gg.essential.elementa.dsl.plus
-import org.lwjgl.input.Keyboard
+import gg.essential.universal.UKeyboard
 import java.awt.Color
 
 class Snake : Game() {
@@ -57,10 +57,10 @@ class Snake : Game() {
         if (gameOver) return
 
         val newDirection = when (key) {
-            Keyboard.KEY_W -> Vector2d(0, -1)
-            Keyboard.KEY_S -> Vector2d(0, 1)
-            Keyboard.KEY_A -> Vector2d(-1, 0)
-            Keyboard.KEY_D -> Vector2d(1, 0)
+            UKeyboard.KEY_W -> Vector2d(0, -1)
+            UKeyboard.KEY_S -> Vector2d(0, 1)
+            UKeyboard.KEY_A -> Vector2d(-1, 0)
+            UKeyboard.KEY_D -> Vector2d(1, 0)
             else -> return
         }
 
