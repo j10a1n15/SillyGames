@@ -24,6 +24,7 @@ class CommandManager {
         ClientCommandHandler.instance.registerCommand(SimpleCommand(name, createCommand(function)))
     }
 
+    @Suppress("unused")
     private fun registerCommand0(
         name: String,
         function: (Array<String>) -> Unit,
