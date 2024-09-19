@@ -3,6 +3,7 @@ package gay.j10a1n15.sillygames.events
 import gg.essential.universal.UMatrixStack
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiChat
+import net.minecraftforge.client.event.GuiScreenEvent
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import net.minecraftforge.fml.common.gameevent.TickEvent
 import org.lwjgl.input.Keyboard
@@ -33,6 +34,14 @@ object EventHandler {
             val key = Keyboard.getEventKey()
             Events.KEYBOARD.post(key)
             return
+        }
+    }
+
+    @SubscribeEvent
+    fun onKeyPressed(event: GuiScreenEvent.KeyboardInputEvent.Post) {
+        if (Keyboard.getEventKeyState() && Keyboard.getEventKey() != 0) {
+            val key = Keyboard.getEventKey()
+            Events.KEYBOARD_DOWN.post(key)
         }
     }
 }

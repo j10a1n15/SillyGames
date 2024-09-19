@@ -7,5 +7,7 @@ abstract class Game {
 
     open fun onTick() {}
 
-    open fun onKeyClick(key: Int) {}
+    open fun onKeyHeld(key: Int) {}
+
+    open fun onKeyPressed(key: Int) {}
 }

@@ -6,6 +6,7 @@ object Events {
     val RENDER = EventType<UMatrixStack>()
     val TICK = EventType<Unit>()
     val KEYBOARD = EventType<Int>()
+    val KEYBOARD_DOWN = EventType<Int>()
 }
 
 class EventType<T> {

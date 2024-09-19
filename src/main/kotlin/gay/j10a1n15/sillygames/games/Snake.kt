@@ -57,7 +57,7 @@ class Snake : Game() {
         }.toMutableList()
     }
 
-    override fun onKeyClick(key: Int) {
+    override fun onKeyHeld(key: Int) {
         if (gameOver) return
 
         val newDirection = when (key) {
