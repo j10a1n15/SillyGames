@@ -1,6 +1,5 @@
 package gay.j10a1n15.sillygames.games
 
-import gay.j10a1n15.sillygames.utils.SillyUtils
 import gay.j10a1n15.sillygames.utils.Vector2d
 import gg.essential.elementa.UIComponent
 import gg.essential.elementa.components.UIBlock
@@ -12,15 +11,12 @@ import gg.essential.elementa.dsl.childOf
 import gg.essential.elementa.dsl.constrain
 import gg.essential.elementa.dsl.constraint
 import gg.essential.elementa.dsl.percent
-import gg.essential.elementa.dsl.pixel
 import gg.essential.elementa.dsl.plus
-import net.minecraft.client.gui.ScaledResolution
 import org.lwjgl.input.Keyboard
 import java.awt.Color
 
 class Snake : Game() {
 
-    private val gridSize = 20
     private val gridWidth = 30
     private val gridHeight = 20
 
@@ -89,9 +85,15 @@ class Snake : Game() {
             height = 100.percent
         }
 
+        val cellWidthPercent = 100f / gridWidth
+        val cellHeightPercent = 100f / gridHeight
+
+        val totalGridWidthPercent = cellWidthPercent * gridWidth
+        val totalGridHeightPercent = cellHeightPercent * gridHeight
+
         val background = UIBlock().constrain {
-            width = (gridWidth * gridSize).pixel
-            height = (gridHeight * gridSize).pixel
+            width = totalGridWidthPercent.percent
+            height = totalGridHeightPercent.percent
             x = CenterConstraint()
             y = CenterConstraint()
             color = Color.GREEN.constraint
@@ -101,30 +103,30 @@ class Snake : Game() {
             for (_y in 0 until gridHeight) {
                 val gridColor = if ((_x + _y) % 2 == 0) Color(0, 100, 0) else Color(0, 120, 0)
                 UIBlock().constrain {
-                    width = gridSize.pixel
-                    height = gridSize.pixel
-                    x = (_x * gridSize).pixel
-                    y = (_y * gridSize).pixel
+                    width = cellWidthPercent.percent
+                    height = cellHeightPercent.percent
+                    x = (_x * cellWidthPercent).percent
+                    y = (_y * cellHeightPercent).percent
                     color = gridColor.constraint
                 } childOf background
             }
         }
 
         UIBlock().constrain {
-            width = gridSize.pixel
-            height = gridSize.pixel
-            x = (foodPosition.x * gridSize).pixel
-            y = (foodPosition.y * gridSize).pixel
+            width = cellWidthPercent.percent
+            height = cellHeightPercent.percent
+            x = (foodPosition.x * cellWidthPercent).percent
+            y = (foodPosition.y * cellHeightPercent).percent
             color = Color.BLUE.constraint
         } childOf background
 
         for ((index, segment) in snake.withIndex()) {
             val segmentColor = if (index == 0) Color.RED else if (index % 2 == 1) Color(23, 172, 16) else Color(72, 232, 40)
             UIBlock().constrain {
-                width = gridSize.pixel
-                height = gridSize.pixel
-                x = (segment.x * gridSize).pixel
-                y = (segment.y * gridSize).pixel
+                width = cellWidthPercent.percent
+                height = cellHeightPercent.percent
+                x = (segment.x * cellWidthPercent).percent
+                y = (segment.y * cellHeightPercent).percent
                 color = segmentColor.constraint
             } childOf background
         }
@@ -135,13 +137,11 @@ class Snake : Game() {
         } childOf container
 
         if (gameOver) {
-            val resolution = ScaledResolution(SillyUtils.minecraft)
-
             UIBlock().constrain {
                 x = CenterConstraint()
                 y = CenterConstraint()
-                width = resolution.scaledWidth.pixel
-                height = resolution.scaledHeight.pixel
+                width = 100.percent
+                height = 100.percent
                 color = Color(0, 0, 0, 150).constraint
             } childOf container
 
@@ -152,7 +152,7 @@ class Snake : Game() {
 
             UIText("Click to Restart").constrain {
                 x = CenterConstraint()
-                y = SiblingConstraint() + 10.pixel
+                y = SiblingConstraint() + 10.percent
             }.onMouseClick {
                 snake = mutableListOf(Vector2d(10, 10))
                 direction = Vector2d(1, 0)
