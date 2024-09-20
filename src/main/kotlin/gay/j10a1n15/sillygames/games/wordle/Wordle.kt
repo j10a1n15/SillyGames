@@ -6,6 +6,7 @@ import gg.essential.elementa.components.UIBlock
 import gg.essential.elementa.components.UIContainer
 import gg.essential.elementa.components.UIRoundedRectangle
 import gg.essential.elementa.components.UIText
+import gg.essential.elementa.components.input.UITextInput
 import gg.essential.elementa.constraints.CenterConstraint
 import gg.essential.elementa.constraints.ChildBasedMaxSizeConstraint
 import gg.essential.elementa.constraints.ChildBasedSizeConstraint
@@ -14,11 +15,14 @@ import gg.essential.elementa.constraints.SiblingConstraint
 import gg.essential.elementa.dsl.childOf
 import gg.essential.elementa.dsl.constrain
 import gg.essential.elementa.dsl.effect
+import gg.essential.elementa.dsl.percent
 import gg.essential.elementa.dsl.pixels
+import gg.essential.elementa.dsl.plus
 import gg.essential.elementa.dsl.toConstraint
 import gg.essential.elementa.effects.OutlineEffect
 import gg.essential.elementa.utils.withAlpha
 import gg.essential.universal.UKeyboard
+import java.awt.Color
 
 private const val BOX_SIZE = 30
 private const val BOX_SPACING = 5
@@ -35,6 +39,43 @@ class Wordle : Game() {
     private val state: WordleState = WordleState()
     private var text: String = ""
     private var time: Long = 0
+
+    private val wordIndexInput = UITextInput("Custom Word Index").constrain {
+        width = 90.percent
+        height = 10.pixels()
+        x = CenterConstraint()
+        y = CenterConstraint()
+        color = Color.GRAY.toConstraint()
+    }.onKeyType { _, key ->
+        if (key == UKeyboard.KEY_ENTER) {
+            val index = (this as UITextInput).getText().toIntOrNull()
+            if (index != null) {
+                state.reset(index)
+                setText("")
+            }
+        }
+    }.onMouseEnter {
+        grabWindowFocus()
+    }.onMouseLeave {
+        releaseWindowFocus()
+    } as UITextInput
+
+    private fun getWordIndexInputDisplay(): UIComponent? {
+        if (state.tries != 0) return null
+        else {
+            val container = UIBlock().constrain {
+                this.width = 20.percent()
+                this.height = 10.percent()
+                this.x = CenterConstraint()
+                this.y = 100.percent()
+                this.color = WordlePalette.GRAY.toConstraint()
+            }
+
+            wordIndexInput childOf container
+
+            return container
+        }
+    }
 
     private fun getWordDisplay(): UIComponent {
         return UIContainer().apply {
@@ -188,18 +229,23 @@ class Wordle : Game() {
 
             val timeDiff = System.currentTimeMillis() - time
 
-            UIText(text, true).constrain {
-                this.x = CenterConstraint()
-                this.y = SiblingConstraint(20f, true)
-                this.color = WordlePalette.WHITE.withAlpha(
-                    // face in and out over first 1.5 seconds and last 1.5 seconds
-                    when (timeDiff) {
-                        in 0..1500 -> (timeDiff / 1500f).coerceIn(0f, 1f)
-                        in 3500..Int.MAX_VALUE -> ((5000 - timeDiff) / 1500f).coerceIn(0f, 1f)
-                        else -> 1f
-                    }
-                ).toConstraint()
-            } childOf this
+            val multiLineText = text.split("\n").reversed()
+            for ((i, line) in multiLineText.withIndex()) {
+                UIText(line, true).constrain {
+                    this.x = CenterConstraint()
+                    this.y = SiblingConstraint(20f, true) + (20f * i).pixels()
+                    this.color = WordlePalette.WHITE.withAlpha(
+                        // face in and out over first 1.5 seconds and last 1.5 seconds
+                        when (timeDiff) {
+                            in 0..1500 -> (timeDiff / 1500f).coerceIn(0f, 1f)
+                            in 3500..Int.MAX_VALUE -> ((5000 - timeDiff) / 1500f).coerceIn(0f, 1f)
+                            else -> 1f
+                        },
+                    ).toConstraint()
+                } childOf this
+            }
+
+            getWordIndexInputDisplay()?.childOf(this)
         }
     }
 
@@ -209,6 +255,7 @@ class Wordle : Game() {
     }
 
     override fun onKeyPressed(key: Int) {
+        if (wordIndexInput.hasFocus()) return
         when (key) {
             UKeyboard.KEY_ENTER -> guess()
             else -> state.keyPress(key)

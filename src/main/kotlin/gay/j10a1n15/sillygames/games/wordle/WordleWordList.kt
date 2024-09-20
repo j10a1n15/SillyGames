@@ -13,9 +13,16 @@ object WordleWordList {
         val allowedStream = this::class.java.getResourceAsStream("/wordle/allowed.txt")
         this.allowed.addAll(IOUtils.readLines(allowedStream, Charsets.UTF_8))
         this.allowed.addAll(this.words)
+
+        val seed = 69420L
+        this.words.shuffle(java.util.Random(seed))
     }
 
     fun isAllowed(word: String) = this.allowed.contains(word.lowercase())
 
     fun getWord() = this.words.random()
+
+    fun getWord(index: Int) = this.words.getOrNull(index) ?: this.words.random()
+
+    fun getIndex(word: String) = this.words.indexOf(word)
 }

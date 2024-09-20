@@ -1,7 +1,7 @@
 package gay.j10a1n15.sillygames.commands
 
 
-import gay.j10a1n15.sillygames.games.Snake
+import gay.j10a1n15.sillygames.games.wordle.Wordle
 import gay.j10a1n15.sillygames.screens.FullScreen
 import gay.j10a1n15.sillygames.screens.PictureInPicture
 import gay.j10a1n15.sillygames.utils.SillyUtils.display
@@ -13,7 +13,7 @@ class CommandManager {
 
     init {
         registerCommand("fullscreen") {
-            FullScreen(Snake()).display()
+            FullScreen(Wordle()).display()
         }
         registerCommand("pip") {
             PictureInPicture.visible = !PictureInPicture.visible
