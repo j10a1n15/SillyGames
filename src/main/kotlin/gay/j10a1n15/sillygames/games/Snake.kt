@@ -170,4 +170,6 @@ class Snake : Game() {
     }
 
     override val pip = true
+
+    override val name = "Snake"
 }

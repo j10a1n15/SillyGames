@@ -1,8 +1,7 @@
 package gay.j10a1n15.sillygames.commands
 
 
-import gay.j10a1n15.sillygames.games.wordle.Wordle
-import gay.j10a1n15.sillygames.screens.FullScreen
+import gay.j10a1n15.sillygames.screens.GameSelector
 import gay.j10a1n15.sillygames.screens.PictureInPicture
 import gay.j10a1n15.sillygames.utils.SillyUtils.display
 import net.minecraft.command.ICommandSender
@@ -12,8 +11,8 @@ import net.minecraftforge.client.ClientCommandHandler
 class CommandManager {
 
     init {
-        registerCommand("fullscreen") {
-            FullScreen(Wordle()).display()
+        registerCommand("games") {
+            GameSelector().display()
         }
         registerCommand("pip") {
             PictureInPicture.visible = !PictureInPicture.visible

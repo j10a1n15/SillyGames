@@ -270,4 +270,6 @@ class Wordle : Game() {
             }
         }
     }
+
+    override val name = "Wordle"
 }
