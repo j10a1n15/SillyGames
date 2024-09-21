@@ -5,7 +5,10 @@ import gg.essential.elementa.UIComponent
 import gg.essential.elementa.components.UIBlock
 import gg.essential.elementa.components.UIContainer
 import gg.essential.elementa.components.UIText
+import gg.essential.elementa.constraints.AspectConstraint
 import gg.essential.elementa.constraints.CenterConstraint
+import gg.essential.elementa.constraints.ChildBasedMaxSizeConstraint
+import gg.essential.elementa.constraints.ChildBasedSizeConstraint
 import gg.essential.elementa.constraints.SiblingConstraint
 import gg.essential.elementa.dsl.childOf
 import gg.essential.elementa.dsl.constrain
@@ -99,36 +102,37 @@ class Snake : Game() {
             color = Color.GREEN.constraint
         } childOf container
 
-        for (_x in 0 until gridWidth) {
-            for (_y in 0 until gridHeight) {
-                val gridColor = if ((_x + _y) % 2 == 0) Color(0, 100, 0) else Color(0, 120, 0)
-                UIBlock().constrain {
-                    width = cellWidthPercent.percent
-                    height = cellHeightPercent.percent
-                    x = (_x * cellWidthPercent).percent
-                    y = (_y * cellHeightPercent).percent
-                    color = gridColor.constraint
-                } childOf background
-            }
-        }
-
-        UIBlock().constrain {
-            width = cellWidthPercent.percent
-            height = cellHeightPercent.percent
-            x = (foodPosition.x * cellWidthPercent).percent
-            y = (foodPosition.y * cellHeightPercent).percent
-            color = Color.BLUE.constraint
+        val grid = UIContainer().constrain {
+            width = ChildBasedMaxSizeConstraint()
+            height = 100.percent()
+            x = CenterConstraint()
         } childOf background
 
-        for ((index, segment) in snake.withIndex()) {
-            val segmentColor = if (index == 0) Color.RED else if (index % 2 == 1) Color(23, 172, 16) else Color(72, 232, 40)
-            UIBlock().constrain {
-                width = cellWidthPercent.percent
-                height = cellHeightPercent.percent
-                x = (segment.x * cellWidthPercent).percent
-                y = (segment.y * cellHeightPercent).percent
-                color = segmentColor.constraint
-            } childOf background
+        for (_y in 0 until gridHeight) {
+            val row = UIContainer().constrain {
+                width = ChildBasedSizeConstraint()
+                height = cellHeightPercent.percent()
+                y = SiblingConstraint()
+            } childOf grid
+
+            for (_x in 0 until gridWidth) {
+                val indexInSnake = snake.indexOfFirst { it.x == _x && it.y == _y }
+                val gridColor = when {
+                    foodPosition.x == _x && foodPosition.y == _y -> Color.BLUE
+                    indexInSnake == 0 -> Color.RED
+                    indexInSnake != -1 && indexInSnake % 2 == 1 -> Color(23, 172, 16)
+                    indexInSnake != -1 -> Color(72, 232, 40)
+                    (_x + _y) % 2 == 0 -> Color(0, 100, 0)
+                    else -> Color(0, 120, 0)
+                }
+
+                UIBlock().constrain {
+                    height = 100.percent()
+                    width = AspectConstraint(1f)
+                    x = SiblingConstraint()
+                    color = gridColor.constraint
+                } childOf row
+            }
         }
 
         UIText("Score: $score").constrain {
