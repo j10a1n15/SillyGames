@@ -10,4 +10,6 @@ abstract class Game {
     open fun onKeyHeld(key: Int) {}
 
     open fun onKeyPressed(key: Int) {}
+
+    open val pip = false
 }

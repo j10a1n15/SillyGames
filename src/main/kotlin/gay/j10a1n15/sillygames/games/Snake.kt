@@ -168,4 +168,6 @@ class Snake : Game() {
     private fun randomLocation(): Vector2d = Vector2d((0 until gridWidth).random(), (0 until gridHeight).random()).let {
         if (it in snake) randomLocation() else it
     }
+
+    override val pip = true
 }
