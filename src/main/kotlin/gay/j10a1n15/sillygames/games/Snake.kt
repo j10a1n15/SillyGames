@@ -88,15 +88,13 @@ class Snake : Game() {
             height = 100.percent
         }
 
-        val cellWidthPercent = 100f / gridWidth
         val cellHeightPercent = 100f / gridHeight
 
-        val totalGridWidthPercent = cellWidthPercent * gridWidth
         val totalGridHeightPercent = cellHeightPercent * gridHeight
 
         val background = UIBlock().constrain {
-            width = totalGridWidthPercent.percent
-            height = totalGridHeightPercent.percent
+            width = ChildBasedSizeConstraint()
+            height = totalGridHeightPercent.percent()
             x = CenterConstraint()
             y = CenterConstraint()
             color = Color.GREEN.constraint
