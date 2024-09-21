@@ -2,7 +2,7 @@ package gay.j10a1n15.sillygames.screens
 
 import gay.j10a1n15.sillygames.events.Events
 import gay.j10a1n15.sillygames.games.Game
-import gay.j10a1n15.sillygames.games.GameEventManager
+import gay.j10a1n15.sillygames.games.GameManager
 import gay.j10a1n15.sillygames.games.Snake
 import gg.essential.elementa.ElementaVersion
 import gg.essential.elementa.WindowScreen
@@ -54,6 +54,6 @@ object PictureInPicture : WindowScreen(
     }
 
     private fun updateEventListeners() {
-        GameEventManager.setGame(if (visible) game else null)
+        GameManager.game = if (visible) game else null
     }
 }

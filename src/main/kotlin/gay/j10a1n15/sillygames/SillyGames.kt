@@ -2,6 +2,7 @@ package gay.j10a1n15.sillygames
 
 import gay.j10a1n15.sillygames.commands.CommandManager
 import gay.j10a1n15.sillygames.events.EventHandler
+import gay.j10a1n15.sillygames.rpc.RpcManager
 import gay.j10a1n15.sillygames.screens.PictureInPicture
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.fml.common.Mod
@@ -32,5 +33,7 @@ class SillyGames {
         ).forEach {
             MinecraftForge.EVENT_BUS.register(it)
         }
+
+        RpcManager.start()
     }
 }

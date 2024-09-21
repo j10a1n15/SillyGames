@@ -1,12 +1,14 @@
 package gay.j10a1n15.sillygames.games.wordle
 
+import gay.j10a1n15.sillygames.rpc.RpcInfo
+import gay.j10a1n15.sillygames.rpc.RpcProvider
 import gay.j10a1n15.sillygames.utils.SillyUtils.getKeyCodeName
 import gay.j10a1n15.sillygames.utils.SillyUtils.replaceAt
 import gg.essential.elementa.utils.invisible
 import gg.essential.universal.UKeyboard
 import java.awt.Color
 
-class WordleState(private val wordIndexInput: Int? = null) {
+class WordleState(private val wordIndexInput: Int? = null): RpcProvider {
 
     private val letterKeys = setOf(
         UKeyboard.KEY_A, UKeyboard.KEY_B, UKeyboard.KEY_C, UKeyboard.KEY_D, UKeyboard.KEY_E, UKeyboard.KEY_F,
@@ -24,6 +26,12 @@ class WordleState(private val wordIndexInput: Int? = null) {
     var tries = 0
     var reset = false
 
+    private val rpc = RpcInfo(
+        firstLine = "Wordle",
+        secondLine = "Guesses: ${tries}/6",
+        start = System.currentTimeMillis()
+    )
+
     fun reset(wordIndex: Int? = null) {
         word = wordIndex?.let { WordleWordList.getWord(it) } ?: WordleWordList.getWord()
         this.wordIndex = wordIndex ?: WordleWordList.getIndex(word)
@@ -32,6 +40,7 @@ class WordleState(private val wordIndexInput: Int? = null) {
         letters.clear()
         tries = 0
         reset = false
+        updateRpc()
     }
 
     fun enterChar(char: Char) {
@@ -92,6 +101,7 @@ class WordleState(private val wordIndexInput: Int? = null) {
         }
 
         tries++
+        updateRpc()
         if (guess.lowercase() == word) {
             reset = true
             return "You won!\nWord Index: $wordIndex"
@@ -104,6 +114,10 @@ class WordleState(private val wordIndexInput: Int? = null) {
 
     private fun isAllowed() = WordleWordList.isAllowed(guesses[tries])
 
+    private fun updateRpc() {
+        rpc.secondLine = "Guesses: ${tries}/6"
+    }
+
     fun getKeyboardColor(letter: Char): Color {
         if (!letters.containsKey(letter.lowercaseChar())) return WordlePalette.LIGHT_GRAY
         return when (letters[letter.lowercaseChar()]) {
@@ -112,4 +126,6 @@ class WordleState(private val wordIndexInput: Int? = null) {
             else -> WordlePalette.GRAY
         }
     }
+
+    override fun getRpcInfo() = rpc
 }
