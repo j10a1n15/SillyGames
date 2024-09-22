@@ -48,10 +48,6 @@ class Snake : Game(), RpcProvider {
         lastUpdateTime = System.currentTimeMillis()
 
         val newHead = (snake.first() + direction).updateHeadOutsideBounds()
-        if (newHead in snake) {
-            gameOver = true
-            return
-        }
 
         snake = (mutableListOf(newHead) + snake).let {
             if (newHead == foodPosition) {
@@ -63,6 +59,10 @@ class Snake : Game(), RpcProvider {
             }
             it
         }.toMutableList()
+
+        if (newHead in snake) {
+            gameOver = true
+        }
     }
 
     override fun onKeyHeld(key: Int) {
@@ -165,15 +165,20 @@ class Snake : Game(), RpcProvider {
                 x = CenterConstraint()
                 y = SiblingConstraint() + 10.percent
             }.onMouseClick {
-                snake = mutableListOf(Vector2d(10, 10))
-                direction = Vector2d(1, 0)
-                foodPosition = randomLocation()
-                gameOver = false
-                score = 0
+                reset()
             } childOf container
         }
 
         return container
+    }
+
+    private fun reset() {
+        snake = mutableListOf(Vector2d(10, 10))
+        direction = Vector2d(1, 0)
+        foodPosition = randomLocation()
+        gameOver = false
+        score = 0
+        rpc.secondLine = "Score: $score"
     }
 
     private fun randomLocation(): Vector2d = Vector2d((0 until gridWidth).random(), (0 until gridHeight).random()).let {
