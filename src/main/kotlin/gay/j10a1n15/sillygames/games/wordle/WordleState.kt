@@ -29,7 +29,8 @@ class WordleState(private val wordIndexInput: Int? = null): RpcProvider {
     private val rpc = RpcInfo(
         firstLine = "Wordle",
         secondLine = "Guesses: ${tries}/6",
-        start = System.currentTimeMillis()
+        start = System.currentTimeMillis(),
+        thumbnail = "wordle_logo",
     )
 
     fun reset(wordIndex: Int? = null) {
