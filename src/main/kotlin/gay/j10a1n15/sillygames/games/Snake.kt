@@ -1,5 +1,7 @@
 package gay.j10a1n15.sillygames.games
 
+import gay.j10a1n15.sillygames.rpc.RpcInfo
+import gay.j10a1n15.sillygames.rpc.RpcProvider
 import gay.j10a1n15.sillygames.utils.Vector2d
 import gg.essential.elementa.UIComponent
 import gg.essential.elementa.components.UIBlock
@@ -18,7 +20,7 @@ import gg.essential.elementa.dsl.plus
 import gg.essential.universal.UKeyboard
 import java.awt.Color
 
-class Snake : Game() {
+class Snake : Game(), RpcProvider {
 
     private val gridWidth = 30
     private val gridHeight = 20
@@ -31,6 +33,12 @@ class Snake : Game() {
 
     private val gameSpeed = 200L
     private var lastUpdateTime = System.currentTimeMillis()
+
+    private val rpc = RpcInfo(
+        firstLine = "Snake",
+        secondLine = "Score: $score",
+        start = System.currentTimeMillis(),
+    )
 
     override fun onTick() {
         if (gameOver) return
@@ -49,6 +57,7 @@ class Snake : Game() {
             if (newHead == foodPosition) {
                 score += 1
                 foodPosition = randomLocation()
+                rpc.secondLine = "Score: $score"
             } else if (it.size > 4) {
                 return@let it.dropLast(1)
             }
@@ -174,4 +183,6 @@ class Snake : Game() {
     override val pip = true
 
     override val name = "Snake"
+
+    override fun getRpcInfo() = rpc
 }
