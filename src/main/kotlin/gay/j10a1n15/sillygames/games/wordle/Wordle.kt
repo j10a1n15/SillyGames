@@ -1,6 +1,7 @@
 package gay.j10a1n15.sillygames.games.wordle
 
 import gay.j10a1n15.sillygames.games.Game
+import gay.j10a1n15.sillygames.rpc.RpcProvider
 import gg.essential.elementa.UIComponent
 import gg.essential.elementa.components.UIBlock
 import gg.essential.elementa.components.UIContainer
@@ -34,7 +35,7 @@ private const val KEYBOARD_SPACING = 5
 private const val ROWS = 6
 private const val COLS = 5
 
-class Wordle : Game() {
+class Wordle : Game(), RpcProvider {
 
     private val state: WordleState = WordleState()
     private var text: String = ""
@@ -272,4 +273,6 @@ class Wordle : Game() {
     }
 
     override val name = "Wordle"
+
+    override fun getRpcInfo() = this.state.getRpcInfo()
 }

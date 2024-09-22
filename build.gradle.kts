@@ -27,6 +27,7 @@ repositories {
     maven("https://repo.sk1er.club/repository/maven-public/")
     maven("https://repo.sk1er.club/repository/maven-releases/")
     maven("https://repo.spongepowered.org/maven/")
+    maven("https://maven.teamresourceful.com/repository/maven-public/")
 }
 
 dependencies {
@@ -39,7 +40,18 @@ dependencies {
     implementation(shade("org.spongepowered:mixin:0.7.11-SNAPSHOT") {
         isTransitive = false
     })
+    implementation(shade("com.jagrosh:DiscordIPC:0.5.3") {
+        exclude(module = "log4j")
+        because("Different version conflicts with Minecraft's Log4J")
+        exclude(module = "gson")
+        because("Different version conflicts with Minecraft's Gson")
+    })
 
     implementation(kotlin("stdlib"))
+}
 
+tasks {
+    fatJar {
+        relocate("com.jagrosh.discordipc", "gay.j10a1n15.sillygames.deps.discordipc")
+    }
 }
