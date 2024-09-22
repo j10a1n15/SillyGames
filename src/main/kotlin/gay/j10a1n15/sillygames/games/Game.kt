@@ -13,5 +13,5 @@ abstract class Game {
 
     open fun onKeyPressed(key: Int) {}
 
-    open val pip = false
+    open val supportsPictureInPicture = false
 }

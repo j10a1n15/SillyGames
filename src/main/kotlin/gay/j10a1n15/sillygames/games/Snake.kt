@@ -185,7 +185,7 @@ class Snake : Game(), RpcProvider {
         if (it in snake) randomLocation() else it
     }
 
-    override val pip = true
+    override val supportsPictureInPicture = true
 
     override val name = "Snake"
 
