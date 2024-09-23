@@ -14,6 +14,7 @@ object Config : Vigilant(File("./config/sillygames.toml")) {
         category = "About",
         customPropertyInfo = InfoProperty::class,
     )
+    @Suppress("unused")
     var informationAbout = ""
 
     init {
