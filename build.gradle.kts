@@ -28,7 +28,11 @@ repositories {
     maven("https://repo.sk1er.club/repository/maven-releases/")
     maven("https://repo.spongepowered.org/maven/")
     maven("https://maven.teamresourceful.com/repository/maven-public/")
+    maven("https://repo.essential.gg/repository/maven-public")
 }
+
+val vigilanceVersion = "306"
+val ucVersion = "363"
 
 dependencies {
     implementation(shade("gg.essential:elementa-${mcData.versionStr}-${mcData.loader.name}:636") {
@@ -48,10 +52,18 @@ dependencies {
     })
 
     implementation(kotlin("stdlib"))
+
+    implementation("gg.essential:vigilance:$vigilanceVersion")
+    modImplementation("gg.essential:universalcraft-1.8.9-forge:$ucVersion")
+
+    modImplementation(include("gg.essential:universalcraft-1.8.9-forge:$ucVersion")!!)
 }
 
 tasks {
     fatJar {
         relocate("com.jagrosh.discordipc", "gay.j10a1n15.sillygames.deps.discordipc")
+        relocate("gg.essential.vigilance", "gay.j10a1n15.sillygames.deps.vigilance")
+        relocate("gg.essential.elementa", "gay.j10a1n15.sillygames.deps.elementa")
+        relocate("gg.essential.universalcraft", "gay.j10a1n15.sillygames.deps.universalcraft")
     }
 }

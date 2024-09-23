@@ -1,6 +1,7 @@
 package gay.j10a1n15.sillygames.commands
 
 
+import gay.j10a1n15.sillygames.config.Config
 import gay.j10a1n15.sillygames.screens.GameSelector
 import gay.j10a1n15.sillygames.screens.PictureInPicture
 import gay.j10a1n15.sillygames.utils.SillyUtils.display
@@ -11,6 +12,9 @@ import net.minecraftforge.client.ClientCommandHandler
 class CommandManager {
 
     init {
+        registerCommand("sillygames") {
+            Config.gui()?.display()
+        }
         registerCommand("games") {
             GameSelector().display()
         }
