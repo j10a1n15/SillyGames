@@ -60,7 +60,7 @@ class Snake : Game(), RpcProvider {
             it
         }.toMutableList()
 
-        if (newHead in snake) {
+        if (newHead in snake.drop(1)) {
             gameOver = true
         }
     }
