@@ -1,6 +1,5 @@
 package gay.j10a1n15.sillygames.commands
 
-
 import gay.j10a1n15.sillygames.config.Config
 import gay.j10a1n15.sillygames.screens.GameSelector
 import gay.j10a1n15.sillygames.screens.PictureInPicture
@@ -12,10 +11,10 @@ import net.minecraftforge.client.ClientCommandHandler
 class CommandManager {
 
     init {
-        registerCommand("sillygames") {
+        registerCommand("sillygames", listOf("sg", "silly")) {
             Config.gui()?.display()
         }
-        registerCommand("games") {
+        registerCommand("games", listOf("game")) {
             GameSelector().display()
         }
         registerCommand("pip") {
@@ -23,18 +22,20 @@ class CommandManager {
         }
     }
 
-    private fun registerCommand(name: String, function: (Array<String>) -> Unit) {
-        ClientCommandHandler.instance.registerCommand(SimpleCommand(name, createCommand(function)))
+    private fun registerCommand(name: String, aliases: List<String> = listOf(), function: (Array<String>) -> Unit) {
+        ClientCommandHandler.instance.registerCommand(SimpleCommand(name, aliases, createCommand(function)))
     }
 
     @Suppress("unused")
     private fun registerCommand0(
         name: String,
+        aliases: List<String> = listOf(),
         function: (Array<String>) -> Unit,
         autoComplete: ((Array<String>) -> List<String>) = { listOf() },
     ) {
         val command = SimpleCommand(
             name,
+            aliases,
             createCommand(function),
             object : SimpleCommand.TabCompleteRunnable {
                 override fun tabComplete(sender: ICommandSender?, args: Array<String>?, pos: BlockPos?): List<String> {
