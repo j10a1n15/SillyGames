@@ -14,4 +14,6 @@ object SillyUtils {
 
     @Suppress("DEPRECATION")
     fun Int.getKeyCodeName() = UKeyboard.getKeyName(this, -1)
+
+    fun Int.isKeyDown() = UKeyboard.isKeyDown(this)
 }
