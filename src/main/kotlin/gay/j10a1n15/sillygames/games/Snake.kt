@@ -1,5 +1,6 @@
 package gay.j10a1n15.sillygames.games
 
+import gay.j10a1n15.sillygames.data.KeybindSet
 import gay.j10a1n15.sillygames.rpc.RpcInfo
 import gay.j10a1n15.sillygames.rpc.RpcProvider
 import gay.j10a1n15.sillygames.utils.Vector2d
@@ -17,7 +18,6 @@ import gg.essential.elementa.dsl.constrain
 import gg.essential.elementa.dsl.constraint
 import gg.essential.elementa.dsl.percent
 import gg.essential.elementa.dsl.plus
-import gg.essential.universal.UKeyboard
 import java.awt.Color
 
 class Snake : Game(), RpcProvider {
@@ -68,13 +68,8 @@ class Snake : Game(), RpcProvider {
     override fun onKeyHeld(key: Int) {
         if (gameOver) return
 
-        val newDirection = when (key) {
-            UKeyboard.KEY_W -> Vector2d(0, -1)
-            UKeyboard.KEY_S -> Vector2d(0, 1)
-            UKeyboard.KEY_A -> Vector2d(-1, 0)
-            UKeyboard.KEY_D -> Vector2d(1, 0)
-            else -> return
-        }
+        // TODO: If in PIP, only use secondary keybinds
+        val newDirection = KeybindSet.configPrimary().getDirection(key) ?: KeybindSet.configSecondary().getDirection(key) ?: return
 
         if (newDirection + direction == Vector2d(0, 0)) return
         direction = newDirection

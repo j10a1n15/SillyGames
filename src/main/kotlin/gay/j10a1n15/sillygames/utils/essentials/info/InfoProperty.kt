@@ -1,4 +1,4 @@
-package gay.j10a1n15.sillygames.utils.essentials
+package gay.j10a1n15.sillygames.utils.essentials.info
 
 import gg.essential.vigilance.data.PropertyInfo
 import gg.essential.vigilance.gui.settings.SettingComponent

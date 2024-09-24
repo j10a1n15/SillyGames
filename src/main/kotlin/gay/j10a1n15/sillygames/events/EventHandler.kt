@@ -38,10 +38,12 @@ object EventHandler {
     }
 
     @SubscribeEvent
-    fun onKeyPressed(event: GuiScreenEvent.KeyboardInputEvent.Post) {
+    fun onKeyPressed(event: GuiScreenEvent.KeyboardInputEvent.Pre) {
         if (Keyboard.getEventKeyState() && Keyboard.getEventKey() != 0) {
             val key = Keyboard.getEventKey()
-            Events.KEYBOARD_DOWN.post(key)
+            if (Events.KEYBOARD_DOWN.post(key)) {
+                event.isCanceled = true
+            }
         }
     }
 }

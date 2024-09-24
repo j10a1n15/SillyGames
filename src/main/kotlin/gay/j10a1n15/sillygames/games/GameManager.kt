@@ -9,6 +9,6 @@ object GameManager {
     init {
         Events.TICK.register { game?.onTick() }
         Events.KEYBOARD.register { game?.onKeyHeld(it) }
-        Events.KEYBOARD_DOWN.register { game?.onKeyPressed(it) }
+        Events.KEYBOARD_DOWN.register { game?.onKeyPressed(it) ?: false }
     }
 }

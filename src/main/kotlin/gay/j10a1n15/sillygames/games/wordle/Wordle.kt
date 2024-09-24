@@ -255,12 +255,13 @@ class Wordle : Game(), RpcProvider {
         this.time = System.currentTimeMillis()
     }
 
-    override fun onKeyPressed(key: Int) {
-        if (wordIndexInput.hasFocus()) return
+    override fun onKeyPressed(key: Int): Boolean {
+        if (wordIndexInput.hasFocus()) return false
         when (key) {
             UKeyboard.KEY_ENTER -> guess()
             else -> state.keyPress(key)
         }
+        return false
     }
 
     override fun onTick() {

@@ -11,7 +11,9 @@ abstract class Game {
 
     open fun onKeyHeld(key: Int) {}
 
-    open fun onKeyPressed(key: Int) {}
+    open fun onKeyPressed(key: Int): Boolean {
+        return false
+    }
 
     open val supportsPictureInPicture = false
 }
