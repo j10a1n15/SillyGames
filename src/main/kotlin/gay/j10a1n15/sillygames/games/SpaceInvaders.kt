@@ -17,29 +17,27 @@ import kotlin.math.absoluteValue
 
 class SpaceInvaders : Game() {
 
-    private var player = Vector2df(50.0f, 90.0f)
-    private var playerSpeed = 1.5f
+    private var playerPosition = Vector2df(50.0f, 90.0f)
+    private val playerSpeed = 1.5f
     private var score = 0
     private val numEntitiesPerRow = 11
     private val numEntityRows = 6
-    private var entities = mutableListOf<Vector2df>()
-    private var bullets = mutableListOf<Vector2df>()
-    private var alreadyShoot = false
+    private val entities = mutableListOf<Vector2df>()
+    private val bullets = mutableListOf<Vector2df>()
+    private var canShoot = true
 
     private val playerWidth = 5f
     private val bulletSpeed = 5f
     private val entitySize = 5f
-
     private var entityDirection = 1
-    private var entitySpeed = 0.2f
+    private val entitySpeed = 0.2f
     private val entityDropDistance = 5f
 
-    private fun start() {
-        player = Vector2df(50.0f, 90.0f)
+    private fun resetGame() {
+        playerPosition = Vector2df(50.0f, 90.0f)
         entities.clear()
         bullets.clear()
         score = 0
-
         generateEntities()
     }
 
@@ -57,21 +55,27 @@ class SpaceInvaders : Game() {
         }
     }
 
-    private fun checkKeyPresses() {
-        if (UKeyboard.KEY_A.isKeyDown()) player.x -= playerSpeed
-        if (UKeyboard.KEY_D.isKeyDown()) player.x += playerSpeed
-        if (UKeyboard.KEY_SPACE.isKeyDown() && !alreadyShoot) {
-            bullets.add(Vector2df(player.x + playerWidth / 2, 90.0f))
-            alreadyShoot = true
-        }
-        if (!UKeyboard.KEY_SPACE.isKeyDown()) alreadyShoot = false
+    private fun handleInput() {
+        when {
+            UKeyboard.KEY_A.isKeyDown() -> playerPosition.x -= playerSpeed
+            UKeyboard.KEY_D.isKeyDown() -> playerPosition.x += playerSpeed
+            UKeyboard.KEY_SPACE.isKeyDown() && canShoot -> {
+                bullets.add(Vector2df(playerPosition.x + playerWidth / 2, 90.0f))
+                canShoot = false
+            }
 
-        player.x = player.x.coerceIn(0.0f, 100.0f - playerWidth)
+            !UKeyboard.KEY_SPACE.isKeyDown() -> canShoot = true
+        }
+
+        playerPosition.x = playerPosition.x.coerceIn(0.0f, 100.0f - playerWidth)
     }
 
     private fun moveEntities() {
         entities.forEach { it.x += entityDirection * entitySpeed }
+        adjustEntityDirectionIfNeeded()
+    }
 
+    private fun adjustEntityDirectionIfNeeded() {
         val leftMost = entities.minOfOrNull { it.x } ?: 0f
         val rightMost = entities.maxOfOrNull { it.x } ?: 100f
 
@@ -81,50 +85,60 @@ class SpaceInvaders : Game() {
         }
     }
 
-    private fun onBulletEntityCollision() {
-        val iterator = entities.iterator()
-        while (iterator.hasNext()) {
-            val entity = iterator.next()
-            bullets.forEach { bullet ->
-                if ((bullet.x - entity.x).absoluteValue < (entitySize / 2 + 0.5f) &&
-                    (bullet.y - entity.y).absoluteValue < (entitySize / 2 + 1.5f)
-                ) {
-                    iterator.remove()
+    private fun checkBulletCollisions() {
+        val bulletIterator = bullets.iterator()
+        while (bulletIterator.hasNext()) {
+            val bullet = bulletIterator.next()
+            val entityIterator = entities.iterator()
+
+            while (entityIterator.hasNext()) {
+                val entity = entityIterator.next()
+                if (isCollision(bullet, entity)) {
+                    bulletIterator.remove()
+                    entityIterator.remove()
                     bullets.remove(bullet)
+                    entities.remove(entity)
                     score += 100
-                    return
+                    break
                 }
             }
         }
     }
 
-    private fun checkPlayerEntityCollision() {
+    private fun isCollision(bullet: Vector2df, entity: Vector2df): Boolean {
+        return (bullet.x - entity.x).absoluteValue < (entitySize / 2 + 0.5f) &&
+            (bullet.y - entity.y).absoluteValue < (entitySize / 2 + 1.5f)
+    }
+
+    private fun checkPlayerCollisions() {
         for (entity in entities) {
-            if ((entity.x - entitySize / 2 - player.x).absoluteValue < (entitySize / 2 + playerWidth / 2) &&
-                (entity.y - entitySize / 2 - player.y).absoluteValue < (entitySize / 2 + 2.5f)
-            ) {
-                start()
+            if (isPlayerHit(entity)) {
+                resetGame()
                 return
             }
         }
     }
 
+    private fun isPlayerHit(entity: Vector2df): Boolean {
+        return (entity.x - entitySize / 2 - playerPosition.x).absoluteValue < (entitySize / 2 + playerWidth / 2) &&
+            (entity.y - entitySize / 2 - playerPosition.y).absoluteValue < (entitySize / 2 + 2.5f)
+    }
+
     override fun onTick() {
-        checkKeyPresses()
-
-        bullets.forEach { it.y -= bulletSpeed }
-
-        bullets.removeIf { it.y.toDouble() < 0 }
-
+        handleInput()
+        updateBullets()
         moveEntities()
-
-        onBulletEntityCollision()
-
-        checkPlayerEntityCollision()
+        checkBulletCollisions()
+        checkPlayerCollisions()
 
         if (entities.isEmpty()) {
             generateEntities()
         }
+    }
+
+    private fun updateBullets() {
+        bullets.forEach { it.y -= bulletSpeed }
+        bullets.removeIf { it.y < 0 }
     }
 
     override fun getDisplay(): UIComponent {
@@ -135,44 +149,56 @@ class SpaceInvaders : Game() {
             height = 75.percent()
             color = Color(0x1e1f1e).toConstraint()
         }.apply {
+            addPlayer()
+            addEntities()
+            addBullets()
+            addScore()
+        }
+    }
+
+    private fun UIComponent.addPlayer() {
+        UIBlock().constrain {
+            x = playerPosition.x.percent()
+            y = playerPosition.y.percent()
+            width = playerWidth.percent()
+            height = 5.percent()
+            color = Color.WHITE.toConstraint()
+        } childOf this
+    }
+
+    private fun UIComponent.addEntities() {
+        entities.forEach { entity ->
             UIBlock().constrain {
-                x = player.x.percent()
-                y = player.y.percent()
-                width = playerWidth.percent()
-                height = 5.percent()
-                color = Color.WHITE.toConstraint()
-            } childOf this
-
-            entities.forEach {
-                UIBlock().constrain {
-                    x = it.x.percent() - (entitySize / 2).percent()
-                    y = it.y.percent() - (entitySize / 2).percent()
-                    width = entitySize.percent()
-                    height = entitySize.percent()
-                    color = Color.WHITE.toConstraint()
-                } childOf this
-            }
-
-            bullets.forEach {
-                UIBlock().constrain {
-                    x = it.x.percent()
-                    y = it.y.percent()
-                    width = 1.percent()
-                    height = 3.percent()
-                    color = Color.WHITE.toConstraint()
-                } childOf this
-            }
-
-            UIText("Score: $score").constrain {
-                x = CenterConstraint()
-                y = 1.percent()
-                height = 10.percent()
+                x = entity.x.percent() - (entitySize / 2).percent()
+                y = entity.y.percent() - (entitySize / 2).percent()
+                width = entitySize.percent()
+                height = entitySize.percent()
                 color = Color.WHITE.toConstraint()
             } childOf this
         }
     }
 
-    override val name = "Space Invaders"
+    private fun UIComponent.addBullets() {
+        bullets.forEach { bullet ->
+            UIBlock().constrain {
+                x = bullet.x.percent()
+                y = bullet.y.percent()
+                width = 1.percent()
+                height = 3.percent()
+                color = Color.WHITE.toConstraint()
+            } childOf this
+        }
+    }
 
+    private fun UIComponent.addScore() {
+        UIText("Score: $score").constrain {
+            x = CenterConstraint()
+            y = 1.percent()
+            height = 10.percent()
+            color = Color.WHITE.toConstraint()
+        } childOf this
+    }
+
+    override val name = "Space Invaders"
     override val supportsPictureInPicture = true
 }
