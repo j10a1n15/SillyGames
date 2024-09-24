@@ -40,6 +40,8 @@ class SpaceInvaders : Game() {
         entities.clear()
         bullets.clear()
         score = 0
+        entityDirection = 1
+        lastEntityShotTime = System.currentTimeMillis()
         generateEntities()
     }
 
