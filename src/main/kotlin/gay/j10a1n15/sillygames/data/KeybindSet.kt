@@ -1,6 +1,6 @@
 package gay.j10a1n15.sillygames.data
 
-import gay.j10a1n15.sillygames.SillyGames
+import gay.j10a1n15.sillygames.config.Config
 import gay.j10a1n15.sillygames.utils.Vector2d
 
 class KeybindSet(
@@ -21,11 +21,12 @@ class KeybindSet(
     }
 
     companion object {
-        private val config get() = SillyGames.config
+        fun configPrimary() = with(Config) {
+            KeybindSet(keybindUp, keybindDown, keybindLeft, keybindRight)
+        }
 
-        fun configPrimary() = KeybindSet(config.keybindUp, config.keybindDown, config.keybindLeft, config.keybindRight)
-
-        fun configSecondary() =
-            KeybindSet(config.keybindUpSecondary, config.keybindDownSecondary, config.keybindLeftSecondary, config.keybindRightSecondary)
+        fun configSecondary() = with(Config) {
+            KeybindSet(keybindUpSecondary, keybindDownSecondary, keybindLeftSecondary, keybindRightSecondary)
+        }
     }
 }
