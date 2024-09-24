@@ -60,19 +60,18 @@ class SpaceInvaders : Game() {
     }
 
     private fun handleInput() {
-        when {
-            UKeyboard.KEY_A.isKeyDown() -> playerPosition.x -= playerSpeed
-            UKeyboard.KEY_D.isKeyDown() -> playerPosition.x += playerSpeed
-            UKeyboard.KEY_SPACE.isKeyDown() && canShoot -> {
-                bullets[Vector2df(playerPosition.x + playerWidth / 2, 90.0f)] = BulletType.PLAYER
-                canShoot = false
-            }
-
-            !UKeyboard.KEY_SPACE.isKeyDown() -> canShoot = true
+        if (UKeyboard.KEY_A.isKeyDown()) playerPosition.x -= playerSpeed
+        if (UKeyboard.KEY_D.isKeyDown()) playerPosition.x += playerSpeed
+        if (UKeyboard.KEY_SPACE.isKeyDown() && canShoot) {
+            bullets[Vector2df(playerPosition.x + playerWidth / 2, 90.0f)] = BulletType.PLAYER
+            canShoot = false
         }
+
+        if (!UKeyboard.KEY_SPACE.isKeyDown()) canShoot = true
 
         playerPosition.x = playerPosition.x.coerceIn(0.0f, 100.0f - playerWidth)
     }
+
 
     private fun moveEntities() {
         entities.forEach { it.x += entityDirection * entitySpeed }
