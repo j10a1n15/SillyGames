@@ -23,7 +23,7 @@ class SpaceInvaders : Game() {
     private val numEntitiesPerRow = 11
     private val numEntityRows = 6
     private val entities = mutableListOf<Vector2df>()
-    private val bullets = mutableMapOf<Vector2df, BulletType>()
+    private val playerBullets = mutableListOf<Vector2df>()
     private var canShoot = true
 
     private val playerWidth = 5f
@@ -32,13 +32,15 @@ class SpaceInvaders : Game() {
     private var entityDirection = 1
     private val entitySpeed = 0.2f
     private val entityDropDistance = 5f
+    private val entityBullets = mutableListOf<Vector2df>()
     private val entityBulletCooldown = 2000
     private var lastEntityShotTime = System.currentTimeMillis()
 
     private fun resetGame() {
         playerPosition = Vector2df(50.0f, 90.0f)
         entities.clear()
-        bullets.clear()
+        playerBullets.clear()
+        entityBullets.clear()
         score = 0
         entityDirection = 1
         lastEntityShotTime = System.currentTimeMillis()
@@ -63,7 +65,7 @@ class SpaceInvaders : Game() {
         if (UKeyboard.KEY_A.isKeyDown()) playerPosition.x -= playerSpeed
         if (UKeyboard.KEY_D.isKeyDown()) playerPosition.x += playerSpeed
         if (UKeyboard.KEY_SPACE.isKeyDown() && canShoot) {
-            bullets[Vector2df(playerPosition.x + playerWidth / 2, 90.0f)] = BulletType.PLAYER
+            playerBullets.add(Vector2df(playerPosition.x + playerWidth / 2, 90.0f))
             canShoot = false
         }
 
@@ -89,14 +91,14 @@ class SpaceInvaders : Game() {
     }
 
     private fun checkBulletCollisions() {
-        val bulletIterator = bullets.iterator()
+        val bulletIterator = playerBullets.iterator()
         while (bulletIterator.hasNext()) {
             val bullet = bulletIterator.next()
             val entityIterator = entities.iterator()
 
             while (entityIterator.hasNext()) {
                 val entity = entityIterator.next()
-                if (isCollision(bullet.key, entity)) {
+                if (isCollision(bullet, entity)) {
                     bulletIterator.remove()
                     entityIterator.remove()
                     score += 100
@@ -118,8 +120,8 @@ class SpaceInvaders : Game() {
                 return
             }
         }
-        for (bullet in bullets) {
-            if (bullet.value == BulletType.ENEMY && isPlayerHit(bullet.key)) {
+        for (bullet in entityBullets) {
+            if (isPlayerHit(bullet)) {
                 resetGame()
                 return
             }
@@ -139,7 +141,7 @@ class SpaceInvaders : Game() {
             if (entities.isNotEmpty()) {
                 val shootingEntity = entities.filter { it.y == entities.maxOf { y -> y.y } }.randomOrNull()
                 shootingEntity?.let {
-                    bullets[Vector2df(it.x + entitySize / 2, it.y + entitySize)] = BulletType.ENEMY
+                    entityBullets.add(Vector2df(it.x + entitySize / 2, it.y + entitySize))
                     lastEntityShotTime = currentTime
                 }
             }
@@ -160,14 +162,23 @@ class SpaceInvaders : Game() {
     }
 
     private fun updateBullets() {
-        bullets.forEach { (position, type) ->
-            when (type) {
-                BulletType.PLAYER -> position.y -= bulletSpeed
-                BulletType.ENEMY -> position.y += bulletSpeed
-            }
+        val playerIterator = playerBullets.iterator()
+        while (playerIterator.hasNext()) {
+            val bullet = playerIterator.next()
+            bullet.y -= bulletSpeed
 
-            if (position.y < 0 || position.y > 100) {
-                bullets.remove(position)
+            if (bullet.y < 0) {
+                playerIterator.remove()
+            }
+        }
+
+        val entityIterator = entityBullets.iterator()
+        while (entityIterator.hasNext()) {
+            val bullet = entityIterator.next()
+            bullet.y += bulletSpeed
+
+            if (bullet.y > 100) {
+                entityIterator.remove()
             }
         }
     }
@@ -210,13 +221,23 @@ class SpaceInvaders : Game() {
     }
 
     private fun UIComponent.addBullets() {
-        bullets.forEach { (position, type) ->
+        playerBullets.forEach { position ->
             UIBlock().constrain {
                 x = position.x.percent()
                 y = position.y.percent()
                 width = 1.percent()
                 height = 3.percent()
-                color = (if (type == BulletType.PLAYER) Color.GREEN else Color.RED).toConstraint()
+                color = Color.GREEN.toConstraint()
+            } childOf this
+        }
+
+        entityBullets.forEach { position ->
+            UIBlock().constrain {
+                x = position.x.percent()
+                y = position.y.percent()
+                width = 1.percent()
+                height = 3.percent()
+                color = Color.RED.toConstraint()
             } childOf this
         }
     }
@@ -232,9 +253,4 @@ class SpaceInvaders : Game() {
 
     override val name = "Space Invaders"
     override val supportsPictureInPicture = true
-
-    private enum class BulletType {
-        PLAYER,
-        ENEMY,
-    }
 }
