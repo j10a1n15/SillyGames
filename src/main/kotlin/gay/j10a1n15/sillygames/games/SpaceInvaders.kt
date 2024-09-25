@@ -1,7 +1,7 @@
 package gay.j10a1n15.sillygames.games
 
 import gay.j10a1n15.sillygames.utils.SillyUtils.isKeyDown
-import gay.j10a1n15.sillygames.utils.Vector2df
+import gay.j10a1n15.sillygames.utils.vectors.Vector2f
 import gg.essential.elementa.UIComponent
 import gg.essential.elementa.components.UIBlock
 import gg.essential.elementa.components.UIText
@@ -17,13 +17,13 @@ import kotlin.math.absoluteValue
 
 class SpaceInvaders : Game() {
 
-    private var playerPosition = Vector2df(50.0f, 90.0f)
+    private var playerPosition = Vector2f(50.0f, 90.0f)
     private val playerSpeed = 1.5f
     private var score = 0
     private val numEntitiesPerRow = 11
     private val numEntityRows = 6
-    private val entities = mutableListOf<Vector2df>()
-    private val playerBullets = mutableListOf<Vector2df>()
+    private val entities = mutableListOf<Vector2f>()
+    private val playerBullets = mutableListOf<Vector2f>()
     private var canShoot = true
 
     private val playerWidth = 5f
@@ -32,12 +32,12 @@ class SpaceInvaders : Game() {
     private var entityDirection = 1
     private val entitySpeed = 0.2f
     private val entityDropDistance = 5f
-    private val entityBullets = mutableListOf<Vector2df>()
+    private val entityBullets = mutableListOf<Vector2f>()
     private val entityBulletCooldown = 2000
     private var lastEntityShotTime = System.currentTimeMillis()
 
     private fun resetGame() {
-        playerPosition = Vector2df(50.0f, 90.0f)
+        playerPosition = Vector2f(50.0f, 90.0f)
         entities.clear()
         playerBullets.clear()
         entityBullets.clear()
@@ -56,7 +56,7 @@ class SpaceInvaders : Game() {
             for (i in 0 until numEntitiesPerRow) {
                 val xPosition = (spaceBetweenEntities + i * (entityWidth + spaceBetweenEntities)) + 15
                 val yPosition = 6 + row * (entitySize + 5)
-                entities.add(Vector2df(xPosition, yPosition))
+                entities.add(Vector2f(xPosition, yPosition))
             }
         }
     }
@@ -65,7 +65,7 @@ class SpaceInvaders : Game() {
         if (UKeyboard.KEY_A.isKeyDown()) playerPosition.x -= playerSpeed
         if (UKeyboard.KEY_D.isKeyDown()) playerPosition.x += playerSpeed
         if (UKeyboard.KEY_SPACE.isKeyDown() && canShoot) {
-            playerBullets.add(Vector2df(playerPosition.x + playerWidth / 2, 90.0f))
+            playerBullets.add(Vector2f(playerPosition.x + playerWidth / 2, 90.0f))
             canShoot = false
         }
 
@@ -108,7 +108,7 @@ class SpaceInvaders : Game() {
         }
     }
 
-    private fun isCollision(bullet: Vector2df, entity: Vector2df): Boolean {
+    private fun isCollision(bullet: Vector2f, entity: Vector2f): Boolean {
         return (bullet.x - entity.x).absoluteValue < (entitySize / 2 + 0.5f) &&
             (bullet.y - entity.y).absoluteValue < (entitySize / 2 + 1.5f)
     }
@@ -128,7 +128,7 @@ class SpaceInvaders : Game() {
         }
     }
 
-    private fun isPlayerHit(entity: Vector2df): Boolean {
+    private fun isPlayerHit(entity: Vector2f): Boolean {
         return (entity.x - entitySize / 2 - playerPosition.x).absoluteValue < (entitySize / 2 + playerWidth / 2) &&
             (entity.y - entitySize / 2 - playerPosition.y).absoluteValue < (entitySize / 2 + 2.5f)
     }
@@ -141,7 +141,7 @@ class SpaceInvaders : Game() {
             if (entities.isNotEmpty()) {
                 val shootingEntity = entities.filter { it.y == entities.maxOf { y -> y.y } }.randomOrNull()
                 shootingEntity?.let {
-                    entityBullets.add(Vector2df(it.x + entitySize / 2, it.y + entitySize))
+                    entityBullets.add(Vector2f(it.x + entitySize / 2, it.y + entitySize))
                     lastEntityShotTime = currentTime
                 }
             }

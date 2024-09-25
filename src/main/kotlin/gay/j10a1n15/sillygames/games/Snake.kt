@@ -3,7 +3,7 @@ package gay.j10a1n15.sillygames.games
 import gay.j10a1n15.sillygames.data.KeybindSet
 import gay.j10a1n15.sillygames.rpc.RpcInfo
 import gay.j10a1n15.sillygames.rpc.RpcProvider
-import gay.j10a1n15.sillygames.utils.Vector2d
+import gay.j10a1n15.sillygames.utils.vectors.Vector2i
 import gg.essential.elementa.UIComponent
 import gg.essential.elementa.components.UIBlock
 import gg.essential.elementa.components.UIContainer
@@ -25,8 +25,8 @@ class Snake : Game(), RpcProvider {
     private val gridWidth = 30
     private val gridHeight = 20
 
-    private var snake = mutableListOf(Vector2d(10, 10))
-    private var direction = Vector2d(1, 0)
+    private var snake = mutableListOf(Vector2i(10, 10))
+    private var direction = Vector2i(1, 0)
     private var foodPosition = randomLocation()
     private var gameOver = false
     private var score = 0
@@ -71,11 +71,11 @@ class Snake : Game(), RpcProvider {
         // TODO: If in PIP, only use secondary keybinds
         val newDirection = KeybindSet.configPrimary().getDirection(key) ?: KeybindSet.configSecondary().getDirection(key) ?: return
 
-        if (newDirection + direction == Vector2d(0, 0)) return
+        if (newDirection + direction == Vector2i(0, 0)) return
         direction = newDirection
     }
 
-    private fun Vector2d.updateHeadOutsideBounds(): Vector2d {
+    private fun Vector2i.updateHeadOutsideBounds(): Vector2i {
         if (x < 0) x = gridWidth - 1
         if (x >= gridWidth) x = 0
         if (y < 0) y = gridHeight - 1
@@ -168,15 +168,15 @@ class Snake : Game(), RpcProvider {
     }
 
     private fun reset() {
-        snake = mutableListOf(Vector2d(10, 10))
-        direction = Vector2d(1, 0)
+        snake = mutableListOf(Vector2i(10, 10))
+        direction = Vector2i(1, 0)
         foodPosition = randomLocation()
         gameOver = false
         score = 0
         rpc.secondLine = "Score: $score"
     }
 
-    private fun randomLocation(): Vector2d = Vector2d((0 until gridWidth).random(), (0 until gridHeight).random()).let {
+    private fun randomLocation(): Vector2i = Vector2i((0 until gridWidth).random(), (0 until gridHeight).random()).let {
         if (it in snake) randomLocation() else it
     }
 
