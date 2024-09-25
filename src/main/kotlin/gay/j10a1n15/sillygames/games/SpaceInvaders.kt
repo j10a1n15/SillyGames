@@ -1,5 +1,6 @@
 package gay.j10a1n15.sillygames.games
 
+import gay.j10a1n15.sillygames.utils.SillyUtils.isAABBCollision
 import gay.j10a1n15.sillygames.utils.SillyUtils.isKeyDown
 import gay.j10a1n15.sillygames.utils.vectors.Vector2f
 import gg.essential.elementa.UIComponent
@@ -11,26 +12,30 @@ import gg.essential.elementa.dsl.constrain
 import gg.essential.elementa.dsl.minus
 import gg.essential.elementa.dsl.percent
 import gg.essential.elementa.dsl.toConstraint
+import gg.essential.elementa.utils.invisible
 import gg.essential.universal.UKeyboard
 import java.awt.Color
-import kotlin.math.absoluteValue
 
 class SpaceInvaders : Game() {
 
     private var playerPosition = Vector2f(50.0f, 90.0f)
     private val playerSpeed = 1.5f
     private var score = 0
+    private var phase = 1
     private val numEntitiesPerRow = 11
-    private val numEntityRows = 6
+    private val numEntityRows = 5
     private val entities = mutableListOf<Vector2f>()
     private val playerBullets = mutableListOf<Vector2f>()
     private var canShoot = true
 
+    private val playerHeight = 5f
     private val playerWidth = 5f
     private val bulletSpeed = 5f
+    private val bulletHeight = 3f
+    private val bulletWidth = 1f
     private val entitySize = 5f
     private var entityDirection = 1
-    private val entitySpeed = 0.2f
+    private var entitySpeed = 0.2f
     private val entityDropDistance = 5f
     private val entityBullets = mutableListOf<Vector2f>()
     private val entityBulletCooldown = 2000
@@ -42,6 +47,8 @@ class SpaceInvaders : Game() {
         playerBullets.clear()
         entityBullets.clear()
         score = 0
+        phase = 1
+        entitySpeed = 0.2f
         entityDirection = 1
         lastEntityShotTime = System.currentTimeMillis()
         generateEntities()
@@ -65,7 +72,7 @@ class SpaceInvaders : Game() {
         if (UKeyboard.KEY_A.isKeyDown()) playerPosition.x -= playerSpeed
         if (UKeyboard.KEY_D.isKeyDown()) playerPosition.x += playerSpeed
         if (UKeyboard.KEY_SPACE.isKeyDown() && canShoot) {
-            playerBullets.add(Vector2f(playerPosition.x + playerWidth / 2, 90.0f))
+            playerBullets.add(Vector2f(playerPosition.x, 90.0f))
             canShoot = false
         }
 
@@ -98,9 +105,14 @@ class SpaceInvaders : Game() {
 
             while (entityIterator.hasNext()) {
                 val entity = entityIterator.next()
-                if (isCollision(bullet, entity)) {
+                if (isAABBCollision(
+                        bullet, bulletWidth, bulletHeight,
+                        entity, entitySize, entitySize,
+                    )
+                ) {
                     bulletIterator.remove()
                     entityIterator.remove()
+                    entitySpeed += 0.005f
                     score += 100
                     break
                 }
@@ -108,29 +120,27 @@ class SpaceInvaders : Game() {
         }
     }
 
-    private fun isCollision(bullet: Vector2f, entity: Vector2f): Boolean {
-        return (bullet.x - entity.x).absoluteValue < (entitySize / 2 + 0.5f) &&
-            (bullet.y - entity.y).absoluteValue < (entitySize / 2 + 1.5f)
-    }
-
     private fun checkPlayerCollisions() {
         for (entity in entities) {
-            if (isPlayerHit(entity)) {
+            if (isAABBCollision(
+                    playerPosition, playerWidth, playerHeight,
+                    entity, entitySize, entitySize,
+                )
+            ) {
                 resetGame()
                 return
             }
         }
         for (bullet in entityBullets) {
-            if (isPlayerHit(bullet)) {
+            if (isAABBCollision(
+                    playerPosition, playerWidth, playerHeight,
+                    bullet, bulletWidth, bulletHeight,
+                )
+            ) {
                 resetGame()
                 return
             }
         }
-    }
-
-    private fun isPlayerHit(entity: Vector2f): Boolean {
-        return (entity.x - entitySize / 2 - playerPosition.x).absoluteValue < (entitySize / 2 + playerWidth / 2) &&
-            (entity.y - entitySize / 2 - playerPosition.y).absoluteValue < (entitySize / 2 + 2.5f)
     }
 
     private fun handleEnemyShooting() {
@@ -158,6 +168,8 @@ class SpaceInvaders : Game() {
 
         if (entities.isEmpty()) {
             generateEntities()
+            phase += 1
+            entitySpeed = 0.2f + (phase - 1) * 0.02f
         }
     }
 
@@ -185,8 +197,6 @@ class SpaceInvaders : Game() {
 
     override fun getDisplay(): UIComponent {
         return UIBlock().constrain {
-            x = 0.percent()
-            y = 0.percent()
             width = 75.percent()
             height = 75.percent()
             color = Color(0x1e1f1e).toConstraint()
@@ -194,16 +204,16 @@ class SpaceInvaders : Game() {
             addPlayer()
             addEntities()
             addBullets()
-            addScore()
+            addTopBar()
         }
     }
 
     private fun UIComponent.addPlayer() {
         UIBlock().constrain {
-            x = playerPosition.x.percent()
-            y = playerPosition.y.percent()
+            x = playerPosition.x.percent() - (playerWidth / 2).percent()
+            y = playerPosition.y.percent() - (playerHeight / 2).percent()
             width = playerWidth.percent()
-            height = 5.percent()
+            height = playerHeight.percent()
             color = Color.WHITE.toConstraint()
         } childOf this
     }
@@ -223,30 +233,50 @@ class SpaceInvaders : Game() {
     private fun UIComponent.addBullets() {
         playerBullets.forEach { position ->
             UIBlock().constrain {
-                x = position.x.percent()
-                y = position.y.percent()
-                width = 1.percent()
-                height = 3.percent()
+                x = position.x.percent() - (bulletWidth / 2).percent()
+                y = position.y.percent() - (bulletHeight / 2).percent()
+                width = bulletWidth.percent()
+                height = bulletHeight.percent()
                 color = Color.GREEN.toConstraint()
             } childOf this
         }
 
         entityBullets.forEach { position ->
             UIBlock().constrain {
-                x = position.x.percent()
-                y = position.y.percent()
-                width = 1.percent()
-                height = 3.percent()
+                x = position.x.percent() - (bulletWidth / 2).percent()
+                y = position.y.percent() - (bulletHeight / 2).percent()
+                width = bulletWidth.percent()
+                height = bulletHeight.percent()
                 color = Color.RED.toConstraint()
             } childOf this
         }
+    }
+
+    private fun UIComponent.addTopBar() {
+        UIBlock().constrain {
+            x = 1.percent()
+            y = 0.percent()
+            width = 100.percent()
+            height = 5.percent()
+            color = Color.BLACK.invisible().toConstraint()
+        }.apply {
+            addScore()
+            addPhase()
+        } childOf this
     }
 
     private fun UIComponent.addScore() {
         UIText("Score: $score").constrain {
             x = CenterConstraint()
             y = 1.percent()
-            height = 10.percent()
+            color = Color.WHITE.toConstraint()
+        } childOf this
+    }
+
+    private fun UIComponent.addPhase() {
+        UIText("Phase: $phase").constrain {
+            x = 1.percent()
+            y = 1.percent()
             color = Color.WHITE.toConstraint()
         } childOf this
     }
