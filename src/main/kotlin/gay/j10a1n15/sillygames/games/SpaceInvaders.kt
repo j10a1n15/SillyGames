@@ -17,6 +17,12 @@ import gg.essential.elementa.utils.invisible
 import gg.essential.universal.UKeyboard
 import java.awt.Color
 
+// TODO:
+//  - entity/player "skin"
+//  - these funny bunker things
+//  - the other entity that randomly spawns and moves left&rightt
+//  - game over indicator or smth
+
 class SpaceInvaders : Game() {
 
     private var playerPosition = Vector2f(50.0f, 90.0f)
