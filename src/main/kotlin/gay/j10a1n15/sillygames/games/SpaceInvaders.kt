@@ -223,9 +223,9 @@ class SpaceInvaders : Game() {
             height = 75.percent()
             color = Color(0x1e1f1e).toConstraint()
         }.apply {
+            addBullets()
             addPlayer()
             addEntities()
-            addBullets()
             addTopBar()
         }
     }
