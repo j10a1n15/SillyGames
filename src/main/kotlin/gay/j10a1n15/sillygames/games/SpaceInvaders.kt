@@ -7,6 +7,7 @@ import gg.essential.elementa.UIComponent
 import gg.essential.elementa.components.UIBlock
 import gg.essential.elementa.components.UIText
 import gg.essential.elementa.constraints.CenterConstraint
+import gg.essential.elementa.constraints.PixelConstraint
 import gg.essential.elementa.dsl.childOf
 import gg.essential.elementa.dsl.constrain
 import gg.essential.elementa.dsl.minus
@@ -20,6 +21,7 @@ class SpaceInvaders : Game() {
 
     private var playerPosition = Vector2f(50.0f, 90.0f)
     private val playerSpeed = 1.5f
+    private var lives = 3
     private var score = 0
     private var phase = 1
     private val numEntitiesPerRow = 11
@@ -42,17 +44,34 @@ class SpaceInvaders : Game() {
     private val entityBulletCooldown = 2000
     private var lastEntityShotTime = System.currentTimeMillis()
 
+    /**
+     * Resets the game to its initial state
+     */
     private fun resetGame() {
+        score = 0
+        phase = 1
+        lives = 3
+        restartCurrentGame()
+    }
+
+    /**
+     * Restarts the current game
+     */
+    private fun restartCurrentGame() {
         playerPosition = Vector2f(50.0f, 90.0f)
         entities.clear()
         playerBullets.clear()
         entityBullets.clear()
-        score = 0
-        phase = 1
         entitySpeed = 0.2f
         entityDirection = 1
         lastEntityShotTime = System.currentTimeMillis()
         generateEntities()
+    }
+
+    private fun lifeLost() {
+        lives -= 1
+        if (lives == 0) resetGame()
+        else restartCurrentGame()
     }
 
     private fun generateEntities() {
@@ -141,7 +160,7 @@ class SpaceInvaders : Game() {
                     bullet, bulletWidth, bulletHeight,
                 )
             ) {
-                resetGame()
+                lifeLost()
                 return
             }
         }
@@ -258,30 +277,32 @@ class SpaceInvaders : Game() {
 
     private fun UIComponent.addTopBar() {
         UIBlock().constrain {
-            x = 1.percent()
-            y = 0.percent()
+            y = 1.percent()
             width = 100.percent()
             height = 5.percent()
             color = Color.BLACK.invisible().toConstraint()
         }.apply {
-            addScore()
             addPhase()
+            addScore()
+            addLives()
+        } childOf this
+    }
+
+    private fun UIComponent.addPhase() {
+        UIText("Phase: $phase").constrain {
+            x = PixelConstraint(10f)
         } childOf this
     }
 
     private fun UIComponent.addScore() {
         UIText("Score: $score").constrain {
             x = CenterConstraint()
-            y = 1.percent()
-            color = Color.WHITE.toConstraint()
         } childOf this
     }
 
-    private fun UIComponent.addPhase() {
-        UIText("Phase: $phase").constrain {
-            x = 1.percent()
-            y = 1.percent()
-            color = Color.WHITE.toConstraint()
+    private fun UIComponent.addLives() {
+        UIText("Lives: $lives").constrain {
+            x = PixelConstraint(10f, alignOpposite = true)
         } childOf this
     }
 
