@@ -16,4 +16,5 @@ abstract class Game {
     }
 
     open val supportsPictureInPicture = false
+    open val icon: String? = null
 }

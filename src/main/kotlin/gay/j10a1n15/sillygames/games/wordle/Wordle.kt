@@ -274,6 +274,6 @@ class Wordle : Game(), RpcProvider {
     }
 
     override val name = "Wordle"
-
+    override val icon = "wordle_logo"
     override fun getRpcInfo() = this.state.getRpcInfo()
 }
