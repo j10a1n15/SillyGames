@@ -22,6 +22,7 @@ import java.awt.Color
 //  - these funny bunker things
 //  - the other entity that randomly spawns and moves left&rightt
 //  - game over indicator or smth
+//  - keybindset support
 
 class SpaceInvaders : Game() {
 
