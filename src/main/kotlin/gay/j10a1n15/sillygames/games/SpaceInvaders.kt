@@ -171,11 +171,9 @@ class SpaceInvaders : Game() {
 
         if (currentTime - lastEntityShotTime >= entityBulletCooldown) {
             if ((0..40).random() != 0) return
-            if (entities.isNotEmpty()) {
-                entities.randomOrNull()?.let {
-                    entityBullets.add(Vector2f(it.x, it.y + entitySize))
-                    lastEntityShotTime = currentTime
-                }
+            entities.randomOrNull()?.let {
+                entityBullets.add(Vector2f(it.x, it.y + entitySize))
+                lastEntityShotTime = currentTime
             }
         }
     }
