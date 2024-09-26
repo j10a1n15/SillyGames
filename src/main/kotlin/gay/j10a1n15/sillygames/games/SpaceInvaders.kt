@@ -30,7 +30,8 @@ class SpaceInvaders : Game() {
 
     private val playerHeight = 5f
     private val playerWidth = 5f
-    private val bulletSpeed = 5f
+    private val playerBulletSpeed = 5f
+    private val entityBulletSpeed = 2f
     private val bulletHeight = 3f
     private val bulletWidth = 1f
     private val entitySize = 5f
@@ -78,7 +79,7 @@ class SpaceInvaders : Game() {
 
         if (!UKeyboard.KEY_SPACE.isKeyDown()) canShoot = true
 
-        playerPosition.x = playerPosition.x.coerceIn(0.0f, 100.0f - playerWidth)
+        playerPosition.x = playerPosition.x.coerceIn(0.0f + playerWidth / 2, 100.0f - playerWidth / 2)
     }
 
 
@@ -88,12 +89,15 @@ class SpaceInvaders : Game() {
     }
 
     private fun adjustEntityDirectionIfNeeded() {
-        val leftMost = entities.minOfOrNull { it.x } ?: 0f
-        val rightMost = entities.maxOfOrNull { it.x } ?: 100f
+        val leftMost = entities.minOfOrNull { it.x } ?: 0.5f
+        val rightMost = entities.maxOfOrNull { it.x } ?: 99.5f
 
-        if (leftMost - entitySize / 2 <= 0 || rightMost + entitySize / 2 >= 100) {
+        if (leftMost - entitySize / 2 <= 0.5 || rightMost + entitySize / 2 >= 99.5) {
             entityDirection *= -1
             entities.forEach { it.y += entityDropDistance }
+            if (entities.any { it.y + entitySize >= playerPosition.y }) {
+                resetGame()
+            }
         }
     }
 
@@ -151,7 +155,7 @@ class SpaceInvaders : Game() {
             if (entities.isNotEmpty()) {
                 val shootingEntity = entities.filter { it.y == entities.maxOf { y -> y.y } }.randomOrNull()
                 shootingEntity?.let {
-                    entityBullets.add(Vector2f(it.x + entitySize / 2, it.y + entitySize))
+                    entityBullets.add(Vector2f(it.x, it.y + entitySize))
                     lastEntityShotTime = currentTime
                 }
             }
@@ -177,7 +181,7 @@ class SpaceInvaders : Game() {
         val playerIterator = playerBullets.iterator()
         while (playerIterator.hasNext()) {
             val bullet = playerIterator.next()
-            bullet.y -= bulletSpeed
+            bullet.y -= playerBulletSpeed
 
             if (bullet.y < 0) {
                 playerIterator.remove()
@@ -187,7 +191,7 @@ class SpaceInvaders : Game() {
         val entityIterator = entityBullets.iterator()
         while (entityIterator.hasNext()) {
             val bullet = entityIterator.next()
-            bullet.y += bulletSpeed
+            bullet.y += entityBulletSpeed
 
             if (bullet.y > 100) {
                 entityIterator.remove()
