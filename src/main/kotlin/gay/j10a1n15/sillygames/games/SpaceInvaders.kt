@@ -41,7 +41,7 @@ class SpaceInvaders : Game() {
     private var entitySpeed = 0.2f
     private val entityDropDistance = 5f
     private val entityBullets = mutableListOf<Vector2f>()
-    private val entityBulletCooldown = 2000
+    private val entityBulletCooldown = 1000
     private var lastEntityShotTime = System.currentTimeMillis()
 
     /**
@@ -170,10 +170,9 @@ class SpaceInvaders : Game() {
         val currentTime = System.currentTimeMillis()
 
         if (currentTime - lastEntityShotTime >= entityBulletCooldown) {
-            if ((0..50).random() != 0) return
+            if ((0..40).random() != 0) return
             if (entities.isNotEmpty()) {
-                val shootingEntity = entities.filter { it.y == entities.maxOf { y -> y.y } }.randomOrNull()
-                shootingEntity?.let {
+                entities.randomOrNull()?.let {
                     entityBullets.add(Vector2f(it.x, it.y + entitySize))
                     lastEntityShotTime = currentTime
                 }
