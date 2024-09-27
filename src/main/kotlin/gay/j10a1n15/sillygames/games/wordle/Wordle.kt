@@ -1,6 +1,7 @@
 package gay.j10a1n15.sillygames.games.wordle
 
 import gay.j10a1n15.sillygames.games.Game
+import gay.j10a1n15.sillygames.games.GameInformation
 import gay.j10a1n15.sillygames.rpc.RpcProvider
 import gg.essential.elementa.UIComponent
 import gg.essential.elementa.components.UIBlock
@@ -273,7 +274,12 @@ class Wordle : Game(), RpcProvider {
         }
     }
 
-    override val name = "Wordle"
-    override val icon = "wordle_logo"
     override fun getRpcInfo() = this.state.getRpcInfo()
+}
+
+object WordleInformation : GameInformation() {
+    override val name = "Wordle"
+    override val description = "Guess the word in 6 tries"
+    override val icon = "wordle_logo"
+    override val factory = { Wordle() }
 }

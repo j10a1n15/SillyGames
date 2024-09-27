@@ -1,9 +1,8 @@
 package gay.j10a1n15.sillygames.screens
 
-import gay.j10a1n15.sillygames.games.Game
-import gay.j10a1n15.sillygames.games.Snake
-import gay.j10a1n15.sillygames.games.numbers.TwentyFortyEight
-import gay.j10a1n15.sillygames.games.wordle.Wordle
+import gay.j10a1n15.sillygames.games.GameInformation
+import gay.j10a1n15.sillygames.games.SnakeInformation
+import gay.j10a1n15.sillygames.games.wordle.WordleInformation
 import gay.j10a1n15.sillygames.utils.SillyUtils.display
 import gg.essential.elementa.ElementaVersion
 import gg.essential.elementa.UIComponent
@@ -26,11 +25,10 @@ import gg.essential.elementa.utils.withAlpha
 import gg.essential.universal.GuiScale
 import java.awt.Color
 
-val gameFactories = listOf<() -> Game>(
-    { Wordle() },
-    { Snake() },
-    { TwentyFortyEight() },
-    { Wordle() },
+val games = listOf(
+    SnakeInformation,
+    WordleInformation,
+    TwentyFortyEightInformation,
 )
 
 class GameSelector : WindowScreen(
@@ -52,15 +50,14 @@ class GameSelector : WindowScreen(
     } childOf container
 
     init {
-        gameFactories.chunked(2).forEachIndexed { row, factoryPair ->
-            factoryPair.forEachIndexed { index, factory ->
-                createButton(factory, row, index)
+        games.chunked(2).forEachIndexed { row, pair ->
+            pair.forEachIndexed { index, info ->
+                createButton(info, row, index)
             }
         }
     }
 
-    private fun createButton(factory: () -> Game, row: Int, index: Int) {
-        val game = factory()
+    private fun createButton(game: GameInformation, row: Int, index: Int) {
         val button = UIBlock().constrain {
             x = (5 + 50 * index).percent()
             y = (20 + 30 * row).percent()
@@ -68,7 +65,7 @@ class GameSelector : WindowScreen(
             height = 20.percent()
             color = Color(0x424242).toConstraint()
         }.onMouseClick {
-            FullScreen(game).display()
+            FullScreen(game.factory()).display()
         } childOf container
 
         if (game.icon != null) {
@@ -86,7 +83,7 @@ class GameSelector : WindowScreen(
         } childOf button
     }
 
-    private fun addTextAndPipSupport(container: UIComponent, game: Game) {
+    private fun addTextAndPipSupport(container: UIComponent, game: GameInformation) {
         val textContainer = UIContainer().constrain {
             x = SiblingConstraint()
             width = FillConstraint()
@@ -106,7 +103,7 @@ class GameSelector : WindowScreen(
                 height = 25.percent()
                 color = Color(0x000000).withAlpha(0.5f).toConstraint()
             }.onMouseClick {
-                PictureInPicture.game = game
+                PictureInPicture.game = game.factory()
                 PictureInPicture.visible = true
             } childOf textContainer
         }
