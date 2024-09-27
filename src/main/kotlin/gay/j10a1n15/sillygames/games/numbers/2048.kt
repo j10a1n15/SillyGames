@@ -6,6 +6,7 @@ import gay.j10a1n15.sillygames.games.GameInformation
 import gay.j10a1n15.sillygames.games.wordle.WordlePalette
 import gay.j10a1n15.sillygames.rpc.RpcInfo
 import gay.j10a1n15.sillygames.rpc.RpcProvider
+import gay.j10a1n15.sillygames.utils.essentials.ElementaUtils.constrainTo
 import gg.essential.elementa.UIComponent
 import gg.essential.elementa.components.UIBlock
 import gg.essential.elementa.components.UIContainer
@@ -67,9 +68,7 @@ class TwentyFortyEight : Game(), RpcProvider {
         } childOf this
 
         getHeader().constrain {
-            this.width = 100.percent().apply {
-                constrainTo = container
-            }
+            this.width = 100.percent() constrainTo container
             this.height = 20.percent()
             this.x = CenterConstraint()
         } childOf this
