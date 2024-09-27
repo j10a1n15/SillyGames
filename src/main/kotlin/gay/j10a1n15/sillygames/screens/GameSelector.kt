@@ -2,6 +2,7 @@ package gay.j10a1n15.sillygames.screens
 
 import gay.j10a1n15.sillygames.games.Game
 import gay.j10a1n15.sillygames.games.Snake
+import gay.j10a1n15.sillygames.games.numbers.TwentyFortyEight
 import gay.j10a1n15.sillygames.games.wordle.Wordle
 import gay.j10a1n15.sillygames.utils.SillyUtils.display
 import gg.essential.elementa.ElementaVersion
@@ -28,7 +29,7 @@ import java.awt.Color
 val gameFactories = listOf<() -> Game>(
     { Wordle() },
     { Snake() },
-    { Snake() },
+    { TwentyFortyEight() },
     { Wordle() },
 )
 
