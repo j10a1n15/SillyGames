@@ -2,6 +2,7 @@ package gay.j10a1n15.sillygames.games.numbers
 
 import gay.j10a1n15.sillygames.data.KeybindSet
 import gay.j10a1n15.sillygames.games.Game
+import gay.j10a1n15.sillygames.games.GameInformation
 import gay.j10a1n15.sillygames.games.wordle.WordlePalette
 import gay.j10a1n15.sillygames.rpc.RpcInfo
 import gay.j10a1n15.sillygames.rpc.RpcProvider
@@ -155,7 +156,12 @@ class TwentyFortyEight : Game(), RpcProvider {
         return true
     }
 
-    override val name: String = "2048"
-    override val supportsPictureInPicture: Boolean = true
     override fun getRpcInfo(): RpcInfo = state.getRpcInfo()
+}
+
+object TwentyFortyEightInformation : GameInformation() {
+    override val name: String = "2048"
+    override val description: String = "A game where you slide tiles to combine them"
+    override val factory: () -> Game = { TwentyFortyEight() }
+    override val supportsPictureInPicture: Boolean = true
 }
