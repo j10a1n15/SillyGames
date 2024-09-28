@@ -180,9 +180,12 @@ class Snake : Game(), RpcProvider {
         if (it in snake) randomLocation() else it
     }
 
-    override val supportsPictureInPicture = true
-
-    override val name = "Snake"
-
     override fun getRpcInfo() = rpc
+}
+
+object SnakeInformation : GameInformation() {
+    override val name = "Snake"
+    override val description = "A classic game of Snake"
+    override val factory = { Snake() }
+    override val supportsPictureInPicture = true
 }
