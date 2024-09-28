@@ -309,7 +309,10 @@ class SpaceInvaders : Game() {
             x = PixelConstraint(10f, alignOpposite = true)
         } childOf this
     }
+}
 
+object SpaceInvadersInformation : GameInformation() {
     override val name = "Space Invaders"
-    override val supportsPictureInPicture = true
+    override val description = "A simple space invaders game"
+    override val factory = { SpaceInvaders() }
 }
