@@ -1,7 +1,7 @@
 package gay.j10a1n15.sillygames.config
 
-import gay.j10a1n15.sillygames.utils.essentials.info.InfoProperty
-import gay.j10a1n15.sillygames.utils.essentials.keybind.KeybindProperty
+import gay.j10a1n15.sillygames.utils.essentials.config.info.InfoProperty
+import gay.j10a1n15.sillygames.utils.essentials.config.keybind.KeybindProperty
 import gg.essential.vigilance.Vigilant
 import gg.essential.vigilance.data.Property
 import gg.essential.vigilance.data.PropertyType

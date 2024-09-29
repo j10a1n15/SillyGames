@@ -1,4 +1,4 @@
-package gay.j10a1n15.sillygames.utils.essentials.keybind
+package gay.j10a1n15.sillygames.utils.essentials.config.keybind
 
 import gay.j10a1n15.sillygames.events.Events
 import gg.essential.elementa.components.UIBlock
