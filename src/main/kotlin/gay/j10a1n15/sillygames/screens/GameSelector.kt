@@ -103,9 +103,10 @@ class GameSelector : WindowScreen(
                 width = AspectConstraint(1f)
                 height = 25.percent()
                 color = Color(0x000000).withAlpha(0.5f).toConstraint()
-            }.onMouseClick {
+            }.onMouseClick { event ->
                 PictureInPicture.game = game.factory()
                 PictureInPicture.visible = true
+                event.stopPropagation()
             } childOf textContainer
         }
     }
