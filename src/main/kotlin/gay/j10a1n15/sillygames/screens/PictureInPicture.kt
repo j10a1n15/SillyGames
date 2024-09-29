@@ -1,6 +1,7 @@
 package gay.j10a1n15.sillygames.screens
 
-import gay.j10a1n15.sillygames.events.Events
+import gay.j10a1n15.sillygames.events.RenderEvent
+import gay.j10a1n15.sillygames.events.handler.Subscribe
 import gay.j10a1n15.sillygames.games.Game
 import gay.j10a1n15.sillygames.games.GameManager
 import gg.essential.elementa.ElementaVersion
@@ -14,17 +15,12 @@ import gg.essential.elementa.dsl.percent
 import gg.essential.elementa.dsl.toConstraint
 import gg.essential.elementa.utils.invisible
 import gg.essential.universal.GuiScale
-import gg.essential.universal.UMatrixStack
 import java.awt.Color
 
 object PictureInPicture : WindowScreen(
     version = ElementaVersion.V5,
     newGuiScale = GuiScale.scaleForScreenSize().ordinal,
 ) {
-    init {
-        Events.RENDER.register(::onRender)
-    }
-
     var game: Game? = null
         set(value) {
             field = value
@@ -36,7 +32,8 @@ object PictureInPicture : WindowScreen(
             updateEventListeners()
         }
 
-    private fun onRender(matrix: UMatrixStack) {
+    @Subscribe
+    fun onRender(event: RenderEvent) {
         if (!visible) return
         window.clearChildren()
 
@@ -63,7 +60,7 @@ object PictureInPicture : WindowScreen(
             } childOf container
         }
 
-        window.draw(matrix)
+        window.draw(event.matrix)
     }
 
     private fun updateEventListeners() {

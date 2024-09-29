@@ -1,16 +1,19 @@
 package gay.j10a1n15.sillygames.games
 
+import gay.j10a1n15.sillygames.events.KeyDownEvent
+import gay.j10a1n15.sillygames.events.TickEvent
+import gay.j10a1n15.sillygames.events.handler.Subscribe
 import gg.essential.elementa.UIComponent
 
 abstract class Game {
     abstract fun getDisplay(): UIComponent
 
-    open fun onTick() {}
+    @Subscribe
+    open fun onTick(event: TickEvent) {
+    }
 
-    open fun onKeyHeld(key: Int) {}
-
-    open fun onKeyPressed(key: Int): Boolean {
-        return false
+    @Subscribe
+    open fun onKeyPressed(event: KeyDownEvent) {
     }
 }
 

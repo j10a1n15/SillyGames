@@ -1,5 +1,8 @@
 package gay.j10a1n15.sillygames.games.wordle
 
+import gay.j10a1n15.sillygames.events.KeyDownEvent
+import gay.j10a1n15.sillygames.events.TickEvent
+import gay.j10a1n15.sillygames.events.handler.Subscribe
 import gay.j10a1n15.sillygames.games.Game
 import gay.j10a1n15.sillygames.games.GameInformation
 import gay.j10a1n15.sillygames.rpc.RpcProvider
@@ -256,16 +259,17 @@ class Wordle : Game(), RpcProvider {
         this.time = System.currentTimeMillis()
     }
 
-    override fun onKeyPressed(key: Int): Boolean {
-        if (wordIndexInput.hasFocus()) return false
-        when (key) {
+    @Subscribe
+    override fun onKeyPressed(event: KeyDownEvent) {
+        if (wordIndexInput.hasFocus()) return
+        when (val key = event.key) {
             UKeyboard.KEY_ENTER -> guess()
             else -> state.keyPress(key)
         }
-        return false
     }
 
-    override fun onTick() {
+    @Subscribe
+    override fun onTick(event: TickEvent) {
         if (System.currentTimeMillis() - time > 5000) {
             text = ""
             if (state.reset) {

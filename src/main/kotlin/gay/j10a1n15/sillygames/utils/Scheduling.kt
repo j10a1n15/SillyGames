@@ -7,7 +7,9 @@ import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
+import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalTime::class)
 object Scheduling {
 
     private val counter = AtomicInteger(0)

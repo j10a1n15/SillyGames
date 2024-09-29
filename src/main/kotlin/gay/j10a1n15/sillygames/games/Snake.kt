@@ -1,6 +1,9 @@
 package gay.j10a1n15.sillygames.games
 
 import gay.j10a1n15.sillygames.data.KeybindSet
+import gay.j10a1n15.sillygames.events.KeyDownEvent
+import gay.j10a1n15.sillygames.events.TickEvent
+import gay.j10a1n15.sillygames.events.handler.Subscribe
 import gay.j10a1n15.sillygames.rpc.RpcInfo
 import gay.j10a1n15.sillygames.rpc.RpcProvider
 import gay.j10a1n15.sillygames.utils.Vector2d
@@ -40,7 +43,8 @@ class Snake : Game(), RpcProvider {
         start = System.currentTimeMillis(),
     )
 
-    override fun onTick() {
+    @Subscribe
+    override fun onTick(event: TickEvent) {
         if (gameOver) return
         if (snake.isEmpty()) return
 
@@ -65,10 +69,12 @@ class Snake : Game(), RpcProvider {
         }
     }
 
-    override fun onKeyHeld(key: Int) {
+    @Subscribe
+    override fun onKeyPressed(event: KeyDownEvent) {
         if (gameOver) return
 
         // TODO: If in PIP, only use secondary keybinds
+        val key = event.key
         val newDirection = KeybindSet.configPrimary().getDirection(key) ?: KeybindSet.configSecondary().getDirection(key) ?: return
 
         if (newDirection + direction == Vector2d(0, 0)) return

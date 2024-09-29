@@ -1,6 +1,7 @@
 package gay.j10a1n15.sillygames.utils.essentials.keybind
 
-import gay.j10a1n15.sillygames.events.Events
+import gay.j10a1n15.sillygames.events.KeyDownEvent
+import gay.j10a1n15.sillygames.events.handler.Subscribe
 import gg.essential.elementa.components.UIBlock
 import gg.essential.elementa.components.UIText
 import gg.essential.elementa.constraints.CenterConstraint
@@ -38,9 +39,6 @@ class KeybindPropertyComponent(initialValue: Int) : SettingComponent() {
             x = CenterConstraint()
             y = CenterConstraint()
         } childOf container
-
-
-        Events.KEYBOARD_DOWN.register { onKeyTyped(it) }
     }
 
     private fun startListeningForKey() {
@@ -48,13 +46,14 @@ class KeybindPropertyComponent(initialValue: Int) : SettingComponent() {
         keyDisplay.setText("Press a key...")
     }
 
-    private fun onKeyTyped(keyCode: Int): Boolean {
+    @Subscribe
+    fun onKeyTyped(event: KeyDownEvent) {
+        val keyCode = event.key
         if (listeningForKey && keyCode != Keyboard.KEY_NONE) {
             setKeybind(keyCode)
             stopListeningForKey()
-            return true
+            event.cancel()
         }
-        return false
     }
 
     private fun setKeybind(keyCode: Int) {

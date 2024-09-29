@@ -11,6 +11,7 @@ import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ScheduledFuture
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
+import kotlin.time.ExperimentalTime
 
 private const val CLIENT_ID = 1287128195124039715L
 
@@ -37,6 +38,7 @@ object RpcManager : IPCListener {
         }
     }
 
+    @OptIn(ExperimentalTime::class)
     override fun onReady(client: IPCClient?) {
         scheduler = Scheduling.schedule(Duration.ZERO, 1.seconds) {
             val info = (GameManager.game as? RpcProvider)?.getRpcInfo()
@@ -63,14 +65,16 @@ object RpcManager : IPCListener {
             client.sendRichPresence(null)
         } else {
             val info = lastInfo!!
-            client.sendRichPresence(RichPresence.Builder().apply {
-                setDetails(info.firstLine)
-                setState(info.secondLine)
-                setStartTimestamp(info.start)
-                info.end?.let { setEndTimestamp(it) }
-                info.thumbnail?.let { setLargeImage(it) }
-                info.icon?.let { setSmallImage(it) }
-            }.build())
+            client.sendRichPresence(
+                RichPresence.Builder().apply {
+                    setDetails(info.firstLine)
+                    setState(info.secondLine)
+                    setStartTimestamp(info.start)
+                    info.end?.let { setEndTimestamp(it) }
+                    info.thumbnail?.let { setLargeImage(it) }
+                    info.icon?.let { setSmallImage(it) }
+                }.build(),
+            )
         }
     }
 
