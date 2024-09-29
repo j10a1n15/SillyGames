@@ -8,7 +8,7 @@ class TwentyFortyEightState: RpcProvider {
 
     private val rpc = RpcInfo("2048", "Score: 0 | Highest Tile: 0", System.currentTimeMillis())
 
-    private val board = Array(4) { IntArray(4) }
+    private val board = Array(4) { Array(4) { Tile(0) } }
 
     var won = false
         private set
@@ -25,12 +25,12 @@ class TwentyFortyEightState: RpcProvider {
     }
 
     private fun random() {
-        if (board.all { row -> row.all { it != 0 } }) return
+        if (board.all { row -> row.all { it.value != 0 } }) return
 
         val x = (0..3).random()
         val y = (0..3).random()
-        if (board[x][y] == 0) {
-            board[x][y] = 2
+        if (board[x][y].value == 0) {
+            board[x][y].value = 2
         } else {
             random()
         }
@@ -41,13 +41,18 @@ class TwentyFortyEightState: RpcProvider {
         val xRange = if (dx == 1) 3 downTo 1 else if (dx == -1) 0..2 else 0..3
         val yRange = if (dy == 1) 3 downTo 1 else if (dy == -1) 0..2 else 0..3
 
+        board.forEach { row -> row.forEach { it.merged = false } }
+
         for (x in xRange) {
             for (y in yRange) {
-                if (board[x][y] == board[x - dx][y - dy]) {
+                val current = board[x][y]
+                val next = board[x - dx][y - dy]
+                if (current.value == next.value && !current.merged && !next.merged) {
                     if (simulate) return true
-                    board[x][y] *= 2
-                    board[x - dx][y - dy] = 0
-                    score += board[x][y]
+                    current.value *= 2
+                    current.merged = true
+                    next.value = 0
+                    score += current.value
                     merged = true
                 }
             }
@@ -61,10 +66,10 @@ class TwentyFortyEightState: RpcProvider {
         when {
             dx == 0 -> {
                 val unfiltered = (0..3).map { x -> (0..3).map { y -> board[x][y] } }
-                val columns = unfiltered.map { it.filter { it != 0 } }
+                val columns = unfiltered.map { it.filter { it.value != 0 } }
                 for (x in 0..3) {
                     val missing = 4 - columns[x].size
-                    val merged = columns[x].pad(missing, dy == -1) { 0 }
+                    val merged = columns[x].pad(missing, dy == -1) { Tile(0) }
                     moved = moved or (unfiltered[x] != merged)
                     if (simulate && unfiltered[x] != merged) return true
                     for (y in 0..3) {
@@ -74,10 +79,10 @@ class TwentyFortyEightState: RpcProvider {
             }
             dy == 0 -> {
                 val unfiltered = (0..3).map { y -> (0..3).map { x -> board[x][y] } }
-                val rows = unfiltered.map { it.filter { it != 0 } }
+                val rows = unfiltered.map { it.filter { it.value != 0 } }
                 for (y in 0..3) {
                     val missing = 4 - rows[y].size
-                    val merged = rows[y].pad(missing, dx == -1) { 0 }
+                    val merged = rows[y].pad(missing, dx == -1) { Tile(0) }
                     moved = moved or (unfiltered[y] != merged)
                     if (simulate && unfiltered[y] != merged) return true
                     for (x in 0..3) {
@@ -93,13 +98,13 @@ class TwentyFortyEightState: RpcProvider {
         if (won || lost) return
         var successful = false
         successful = successful or move(dx, dy)
-        successful = successful or merge(dx, dy)
+        successful = successful or merge(-dx, -dy)
         successful = successful or move(dx, dy)
         if (successful) random()
 
-        rpc.secondLine = "Score: $score | Highest Tile: ${board.flatMap { it.toList() }.maxOrNull()}"
+        rpc.secondLine = "Score: $score | Highest Tile: ${board.flatMap { it.map { it.value }.toList() }.maxOrNull()}"
 
-        if (board.any { row -> row.any { it == 2048 } }) {
+        if (board.any { row -> row.any { it.value == 2048 } }) {
             won = true
             endingTime = System.currentTimeMillis()
             rpc.end = endingTime
@@ -114,7 +119,9 @@ class TwentyFortyEightState: RpcProvider {
         }
     }
 
-    fun get(x: Int, y: Int) = board[x][y]
+    fun get(x: Int, y: Int) = board[x][y].value
 
     override fun getRpcInfo() = rpc
 }
+
+private data class Tile(var value: Int, var merged: Boolean = false)
