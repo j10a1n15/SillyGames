@@ -47,7 +47,7 @@ class TwentyFortyEightState: RpcProvider {
             for (y in yRange) {
                 val current = board[x][y]
                 val next = board[x - dx][y - dy]
-                if (current.value == next.value && !current.merged && !next.merged) {
+                if (current.value != 0 && current.value == next.value && !current.merged && !next.merged) {
                     if (simulate) return true
                     current.value *= 2
                     current.merged = true
@@ -59,7 +59,6 @@ class TwentyFortyEightState: RpcProvider {
         }
         return merged
     }
-
 
     private fun move(dx: Int, dy: Int, simulate: Boolean = false): Boolean {
         var moved = false
