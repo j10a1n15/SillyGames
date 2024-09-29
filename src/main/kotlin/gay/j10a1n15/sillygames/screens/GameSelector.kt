@@ -3,6 +3,7 @@ package gay.j10a1n15.sillygames.screens
 import gay.j10a1n15.sillygames.games.GameInformation
 import gay.j10a1n15.sillygames.games.SnakeInformation
 import gay.j10a1n15.sillygames.games.SpaceInvadersInformation
+import gay.j10a1n15.sillygames.games.numbers.TwentyFortyEightInformation
 import gay.j10a1n15.sillygames.games.wordle.WordleInformation
 import gay.j10a1n15.sillygames.utils.SillyUtils.display
 import gg.essential.elementa.ElementaVersion
@@ -30,6 +31,7 @@ val games = listOf(
     SnakeInformation,
     WordleInformation,
     SpaceInvadersInformation,
+    TwentyFortyEightInformation,
 )
 
 class GameSelector : WindowScreen(

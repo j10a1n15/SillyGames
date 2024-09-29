@@ -35,4 +35,16 @@ object SillyUtils {
         return (object1Left < object2Right && object1Right > object2Left) &&
             (object1Top < object2Bottom && object1Bottom > object2Top)
     }
+
+    fun <T> List<T>.pad(amount: Int, left: Boolean = false, factory: () -> T): List<T> {
+        val result = ArrayList<T>(this.size + amount)
+        if (left) {
+            repeat(amount) { result.add(factory()) }
+        }
+        result.addAll(this)
+        if (!left) {
+            repeat(amount) { result.add(factory()) }
+        }
+        return result
+    }
 }

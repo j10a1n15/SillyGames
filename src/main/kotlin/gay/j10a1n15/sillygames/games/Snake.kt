@@ -37,6 +37,7 @@ class Snake : Game(), RpcProvider {
     private val rpc = RpcInfo(
         firstLine = "Snake",
         secondLine = "Score: $score",
+        icon = "snake_logo",
         start = System.currentTimeMillis(),
     )
 
@@ -110,28 +111,28 @@ class Snake : Game(), RpcProvider {
             x = CenterConstraint()
         } childOf background
 
-        for (_y in 0 until gridHeight) {
+        for (y in 0 until gridHeight) {
             val row = UIContainer().constrain {
                 width = ChildBasedSizeConstraint()
                 height = cellHeightPercent.percent()
-                y = SiblingConstraint()
+                this.y = SiblingConstraint()
             } childOf grid
 
-            for (_x in 0 until gridWidth) {
-                val indexInSnake = snake.indexOfFirst { it.x == _x && it.y == _y }
+            for (x in 0 until gridWidth) {
+                val indexInSnake = snake.indexOfFirst { it.x == x && it.y == y }
                 val gridColor = when {
-                    foodPosition.x == _x && foodPosition.y == _y -> Color.BLUE
+                    foodPosition.x == x && foodPosition.y == y -> Color.BLUE
                     indexInSnake == 0 -> Color.RED
                     indexInSnake != -1 && indexInSnake % 2 == 1 -> Color(23, 172, 16)
                     indexInSnake != -1 -> Color(72, 232, 40)
-                    (_x + _y) % 2 == 0 -> Color(0, 100, 0)
+                    (x + y) % 2 == 0 -> Color(0, 100, 0)
                     else -> Color(0, 120, 0)
                 }
 
                 UIBlock().constrain {
                     height = 100.percent()
                     width = AspectConstraint(1f)
-                    x = SiblingConstraint()
+                    this.x = SiblingConstraint()
                     color = gridColor.constraint
                 } childOf row
             }
@@ -187,5 +188,6 @@ object SnakeInformation : GameInformation() {
     override val name = "Snake"
     override val description = "A classic game of Snake"
     override val factory = { Snake() }
+    override val icon = "snake_logo"
     override val supportsPictureInPicture = true
 }
