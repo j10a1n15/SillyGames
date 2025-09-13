@@ -21,4 +21,11 @@ pluginManagement {
 }
 
 rootProject.name = "Silly Games"
-rootProject.buildFileName = "build.gradle.kts"
+
+dependencyResolutionManagement {
+    versionCatalogs {
+        create("libs") {
+            from(files("libs.versions.toml"))
+        }
+    }
+}

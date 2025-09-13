@@ -11,9 +11,9 @@ import gg.essential.elementa.dsl.toConstraint
 import gg.essential.elementa.utils.withAlpha
 import gg.essential.vigilance.gui.DataBackedSetting
 import gg.essential.vigilance.gui.settings.SettingComponent
-import org.lwjgl.input.Keyboard
 import java.awt.Color
 
+// todo: remove
 class KeybindPropertyComponent(initialValue: Int) : SettingComponent() {
 
     private var listeningForKey = false
@@ -49,7 +49,7 @@ class KeybindPropertyComponent(initialValue: Int) : SettingComponent() {
     }
 
     private fun onKeyTyped(keyCode: Int): Boolean {
-        if (listeningForKey && keyCode != Keyboard.KEY_NONE) {
+        if (listeningForKey/* && keyCode != InputConstants.UNKNOWN*/) {
             setKeybind(keyCode)
             stopListeningForKey()
             return true
@@ -69,6 +69,6 @@ class KeybindPropertyComponent(initialValue: Int) : SettingComponent() {
     }
 
     private fun getKeyName(keyCode: Int): String {
-        return Keyboard.getKeyName(keyCode) ?: "None"
+        return "None"
     }
 }

@@ -1,0 +1,22 @@
+{
+    "schemaVersion": 1,
+    "id": "sillygames",
+    "version": "${version}",
+    "name": "SillyGames",
+    "description": "",
+    "authors": [ ],
+    "contact": { },
+    "environment": "client",
+    "entrypoints": {
+        "client": [
+            {
+                "adapter": "kotlin",
+                "value": "gay.j10a1n15.sillygames.SillyGames"
+            }
+        ]
+    },
+    "depends": {
+        "fabric": "*",
+        "minecraft": "${minecraft_version}"
+    }
+}

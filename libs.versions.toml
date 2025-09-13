@@ -1,0 +1,20 @@
+[versions]
+
+minecraft = "1.21.8"
+fabricLoader = "0.17.2"
+fabricApi = "0.133.4+1.21.8"
+fabricKt = "1.13.6+kotlin.2.2.20"
+loom = "1.11-SNAPSHOT"
+
+devauth = "1.2.1"
+
+[libraries]
+
+fabricLoader = { module = "net.fabricmc:fabric-loader", version.ref = "fabricLoader" }
+fabricApi = { module = "net.fabricmc.fabric-api:fabric-api", version.ref = "fabricApi" }
+fabricKt = { module = "net.fabricmc:fabric-language-kotlin", version.ref = "fabricKt" }
+
+devauth = { module = "me.djtheredstoner:DevAuth-fabric", version.ref = "devauth" }
+
+[plugins]
+loom = { id = "fabric-loom", version.ref = "loom" }
